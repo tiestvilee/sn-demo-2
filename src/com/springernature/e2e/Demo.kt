@@ -63,6 +63,23 @@ data class ManuscriptId(override val raw: UUID) : HasExternalForm<UUID>
 
 data class Manuscript(val id: ManuscriptId, val title: MarkUp)
 
+val originalContent = """
+<p data-index="0">Better Form Design: One Thing Per Page (Case Study)</p>
+<p data-index="1">By Adam Silver, www.smashingmagazine.comView OriginalMay 22nd, 2017</p>
+<p data-index="2">May 22nd, 2017</p>
+<p data-index="3">In 2008, I worked on Boots.com. They wanted a single-page checkout with the trendiest of techniques from that era, including accordions, AJAX and client-side validation.</p>
+
+<p data-index="4" data-already-used>Each step (delivery address, delivery options and credit-card details) had an accordion panel. Each panel was submitted via AJAX. Upon successful submission, the panel collapsed and the next one opened, with a sliding transition.</p>
+
+<p data-index="5">It looked a little like this:</p>
+
+<img data-index="6" src="file:///Users/vile01/work/specops/static editor/uploaded-image.png"/>
+<p data-index="7">Boots' single-page checkout, using an accordion panel for each step. (View large version2)
+<p data-index="8">Users struggled to complete their orders. Errors were hard to fix because users had to scroll up and down. And the accordion panels were painful and distracting. Inevitably, the client asked us to make changes.</p>
+
+<p data-index="9">We redesigned it so that each panel became its own page, removing the need for accordions and AJAX. However, we kept the client-side validation to avoid an unnecessary trip to the server.</p>
+"""
+
 
 fun titleForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
@@ -70,7 +87,17 @@ fun titleForm(dataContext: DSLContext): HttpHandler = { request ->
     val record = dataContext.select(db.title).from(db.manuscript).where(db.manuscriptId.eq(id.raw)).fetchOne()
     val manuscript = Manuscript(id, MarkUp(record.value1() ?: "Manuscript: ${id.raw}"))
 
-    htmlPage(manuscript.title, div(cl("row")
+    htmlPage(manuscript.title, div(cl("row"),
+        div(cl("col-lg-4"),
+            div(cl("full-screen-height"), originalContent)
+        ),
+        div(cl("col-lg-4"),
+            p("form")
+            // form
+        ),
+        div(cl("col-lg-4"),
+            p("typeset")
+        )
     ))
 }
 
@@ -125,6 +152,10 @@ private fun formRow(label: KTag, vararg input: KTag): Div {
 }
 
 val styles = """
+.full-screen-height {
+    height:calc(100vh - 140px);
+    overflow-y:scroll;
+}
 """
 
 private fun htmlPage(title: MarkUp, content: KTag): Response {
@@ -146,7 +177,6 @@ private fun page(title: MarkUp, content: KTag): KTag {
                 header(cl("sticky row"),
                     div(cl("col-sm col-md-10, col-md-offset-1"),
                         a("href" attr "/editor/manuscript", "role" attr "button", "Manuscripts"))),
-                br(),
                 div(cl("container"), content),
                 footer(
                     div(cl("col-sm col-md-10 col-md-offset-1"),
