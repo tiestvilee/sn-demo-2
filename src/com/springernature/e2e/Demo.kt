@@ -36,7 +36,8 @@ fun main(args: Array<String>) {
         .then(
             dbSession(conn, { dataContext ->
                 cors(routes(
-                    "/article/{id:.+}/title" to GET by titleForm(dataContext),
+                    "/article/{id:.+}/title" to GET by updateTitleForm(dataContext),
+                    "/article/{id:.+}/title" to POST by updateTitle(dataContext),
                     "/article/{id:.+}" to GET by redirectToTitle(),
                     "/article" to GET by createArticleForm(),
                     "/article" to POST by createArticle(dataContext),
@@ -53,5 +54,14 @@ fun main(args: Array<String>) {
 
 
 fun dbSession(conn: Connection, fn: (DSLContext) -> HttpHandler): HttpHandler {
-    return fn(DSL.using(conn, SQLDialect.H2))
+    return { request ->
+        try {
+            val response = fn(DSL.using(conn, SQLDialect.H2))(request)
+            conn.commit()
+            response
+        } catch (e: Exception) {
+            conn.rollback()
+            throw e
+        }
+    }
 }

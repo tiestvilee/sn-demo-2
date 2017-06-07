@@ -27,7 +27,7 @@ val originalContent = """
 <p data-index="9">We redesigned it so that each panel became its own page, removing the need for accordions and AJAX. However, we kept the client-side validation to avoid an unnecessary trip to the server.</p>
 """
 
-fun titleForm(dataContext: DSLContext): HttpHandler = { request ->
+fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val record = dataContext.select(db.title).from(db.manuscript).where(db.manuscriptId.eq(id.raw)).fetchOne()
@@ -38,8 +38,33 @@ fun titleForm(dataContext: DSLContext): HttpHandler = { request ->
             div(cl("full-screen-height"), originalContent)
         ),
         div(cl("col-lg-4"),
-            p("form")
-            // form
+            form("method" attr "POST",
+                div(cl("row"),
+                    select(cl("form-selector"),
+                        "name" attr "formSelector",
+                        option("value" attr "title", manuscript.titleState.asIcon + " Title"),
+                        option("value" attr "abstract", FragmentState.invalid.asIcon + " Abstract"))),
+                div(cl("row"),
+                    input("style" attr "width:100%",
+                        "name" attr "title",
+                        "type" attr "text",
+                        "value" attr manuscript.title.raw)),
+                div(cl("row"),
+                    div(cl("col-lg-3"),
+                        button("name" attr "action", "value" attr "previous", "Previous")
+                    ),
+                    div(cl("col-lg-3"),
+                        button("name" attr "action", "value" attr "revert", "Revert")
+                    ),
+                    div(cl("col-lg-3 input-group"),
+                        input(id("approved"), "type" attr "checkbox", "name" attr "approved", "checked" attr "checked", "tabindex" attr "0"),
+                        label("for" attr "approved", "approved")
+                    ),
+                    div(cl("col-lg-3"),
+                        button("name" attr "action", "value" attr "next", "Next")
+                    )
+                )
+            )
         ),
         div(cl("col-lg-4"),
             p("typeset")
@@ -47,20 +72,18 @@ fun titleForm(dataContext: DSLContext): HttpHandler = { request ->
     ))
 }
 
+enum class FragmentState(val asIcon: String) {
+    invalid("❌"), valid("🔀"), accepted("✅");
+}
+
+private val Manuscript.titleState: FragmentState
+    get() = if (this.title.raw.isNotEmpty()) FragmentState.accepted else FragmentState.invalid
+
 fun redirectToTitle(): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
     Response(Status.SEE_OTHER)
         .header("Location", "/article/${id.raw}/title")
 
-}
-
-fun createArticle(dataContext: DSLContext): HttpHandler = { request ->
-    val id = ManuscriptId(UUID.randomUUID())
-
-    dataContext.insertInto(db.manuscript, db.manuscriptId).values(id.raw).execute()
-
-    Response(Status.SEE_OTHER)
-        .header("Location", "/article/${id.raw}")
 }
 
 fun createArticleForm(): HttpHandler {
@@ -102,10 +125,14 @@ val styles = """
     height:calc(100vh - 140px);
     overflow-y:scroll;
 }
+.form-selector {
+    width: 100%;
+    font-size: 24pt;
+}
 """
 
 private fun htmlPage(title: MarkUp, content: KTag): Response {
-    return Response(Status.OK).header("Content-Type", ContentType.TEXT_HTML.value).body(
+    return Response(Status.OK).header("Content-Type", "${ContentType.TEXT_HTML.value}; charset=utf-8").body(
         page(title, content).toCompactHtml()
     )
 }
