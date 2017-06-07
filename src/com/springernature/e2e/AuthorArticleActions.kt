@@ -22,14 +22,14 @@ fun createArticle(dataContext: DSLContext): HttpHandler = { request ->
 }
 
 val titleParam = FormField.string().required("title")
+val abstractParam = FormField.string().required("abstract")
 val actionParam = FormField.string().required("action")
 val formSelector = FormField.string().required("formSelector")
 
 fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val record = dataContext.select(db.title).from(db.manuscript).where(db.manuscriptId.eq(id.raw)).fetchOne()
-    val manuscript = Manuscript(id, MarkUp(record.value1() ?: "Manuscript: ${id.raw}"))
+    val manuscript = retrieveManuscript(dataContext, id)
 
     val webForm = Body.webForm(FormValidator.Strict, titleParam, actionParam, formSelector).toLens()(request)
     val title = titleParam(webForm)
@@ -44,8 +44,35 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
         println("dir " + actionParam(webForm))
         println("form " + formSelector(webForm))
     }
+    val formSuffix = when(action) {
+        "next" -> "abstract"
+        else -> "title"
+    }
 
     Response(Status.SEE_OTHER)
-        .header("Location", "/article/${id.raw}/title")
+        .header("Location", "/article/${id.raw}/$formSuffix")
+}
+
+fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
+    val id = ManuscriptId(UUID.fromString(request.path("id")!!))
+
+    val manuscript = retrieveManuscript(dataContext, id)
+
+    val webForm = Body.webForm(FormValidator.Strict, abstractParam, actionParam, formSelector).toLens()(request)
+    val abstract = abstractParam(webForm)
+    val action = actionParam(webForm)
+
+    if (action != "revert") {
+        val newManuscript = manuscript.copy(abstract = MarkUp(abstract))
+        println("newManuscript = ${newManuscript}")
+        dataContext.update(db.manuscript).set(db.abstract, newManuscript.abstract.raw).where(db.manuscriptId.eq(id.raw)).execute()
+    }
+    val formSuffix = when(action) {
+        "previous" -> "title"
+        else -> "abstract"
+    }
+
+    Response(Status.SEE_OTHER)
+        .header("Location", "/article/${id.raw}/$formSuffix")
 }
 

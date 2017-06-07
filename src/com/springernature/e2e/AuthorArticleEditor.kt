@@ -30,25 +30,41 @@ val originalContent = """
 fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val record = dataContext.select(db.title).from(db.manuscript).where(db.manuscriptId.eq(id.raw)).fetchOne()
-    val manuscript = Manuscript(id, MarkUp(record.value1() ?: "Manuscript: ${id.raw}"))
+    val manuscript = retrieveManuscript(dataContext, id)
 
-    htmlPage(manuscript.title, div(cl("row"),
+    authorEditPage(manuscript, originalContent, "title",
+        div(cl("row"),
+            input("style" attr "width:100%",
+                "name" attr "title",
+                "type" attr "text",
+                "value" attr manuscript.title.raw)))
+}
+
+fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
+    val id = ManuscriptId(UUID.fromString(request.path("id")!!))
+
+    val manuscript = retrieveManuscript(dataContext, id)
+
+    authorEditPage(manuscript, originalContent, "abstract",
+        div(cl("row"),
+        textarea("style" attr "width:100%",
+            "name" attr "abstract",
+            manuscript.abstract.raw)))
+}
+
+private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, currentForm: String, vararg formRows: KTag): Response {
+    return htmlPage(manuscript.title, div(cl("row"),
         div(cl("col-lg-4"),
-            div(cl("full-screen-height"), originalContent)
+            div(cl("full-screen-height"), originalManuscript)
         ),
         div(cl("col-lg-4"),
             form("method" attr "POST",
                 div(cl("row"),
                     select(cl("form-selector"),
                         "name" attr "formSelector",
-                        option("value" attr "title", manuscript.titleState.asIcon + " Title"),
-                        option("value" attr "abstract", FragmentState.invalid.asIcon + " Abstract"))),
-                div(cl("row"),
-                    input("style" attr "width:100%",
-                        "name" attr "title",
-                        "type" attr "text",
-                        "value" attr manuscript.title.raw)),
+                        option("value" attr "title", manuscript.titleState.asIcon + " Title", if(currentForm == "title") { attr("selected")} else {""}),
+                        option("value" attr "abstract", manuscript.abstractState.asIcon + " Abstract", if(currentForm == "abstract") { attr("selected")} else {""}))),
+                *formRows,
                 div(cl("row"),
                     div(cl("col-lg-3"),
                         button("name" attr "action", "value" attr "previous", "Previous")
@@ -78,6 +94,9 @@ enum class FragmentState(val asIcon: String) {
 
 private val Manuscript.titleState: FragmentState
     get() = if (this.title.raw.isNotEmpty()) FragmentState.accepted else FragmentState.invalid
+
+private val Manuscript.abstractState: FragmentState
+    get() = if (this.abstract.raw.isNotEmpty()) FragmentState.accepted else FragmentState.invalid
 
 fun redirectToTitle(): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))

@@ -38,6 +38,8 @@ fun main(args: Array<String>) {
                 cors(routes(
                     "/article/{id:.+}/title" to GET by updateTitleForm(dataContext),
                     "/article/{id:.+}/title" to POST by updateTitle(dataContext),
+                    "/article/{id:.+}/abstract" to GET by updateAbstractForm(dataContext),
+                    "/article/{id:.+}/abstract" to POST by updateAbstract(dataContext),
                     "/article/{id:.+}" to GET by redirectToTitle(),
                     "/article" to GET by createArticleForm(),
                     "/article" to POST by createArticle(dataContext),
