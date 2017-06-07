@@ -1,17 +1,17 @@
 
-mvn://com.springernature.kachtml.dl.bintray.com/http4k/maven/org.http4k:http4k-core:jar|sources:1.13.0
-mvn://com.springernature.kachtml.dl.bintray.com/http4k/maven/org.http4k:http4k-client-okhttp:jar|sources:1.13.0
-mvn://com.springernature.kachtml.dl.bintray.com/http4k/maven/org.http4k:http4k-server-jetty:jar|sources:1.13.0
+mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-core:jar|sources:2.0.5
+mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-client-okhttp:jar|sources:2.0.5
+mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-server-jetty:jar|sources:2.0.5
 
 mvn:com.squareup.okhttp3:okhttp:jar|sources:3.8.0
 mvn:com.squareup.okio:okio:jar|sources:1.13.0
 
 # jooq for postgress
 mvn:org.jooq:jooq:jar|sources:3.9.2
-mvn:org.jooq:jooq-com.springernature.kachtml.meta:jar|sources:3.9.2
+mvn:org.jooq:jooq-meta:jar|sources:3.9.2
 # mvn:org.jooq:jooq-codegen:jar|sources:3.9.2
 mvn:org.postgresql:postgresql:jar:42.1.1
-mvn:com.h2database:com.springernature.kachtml.h2:jar|sources:1.4.195
+mvn:com.h2database:h2:jar|sources:1.4.195
 
 mvn:javax.servlet:javax.servlet-api:jar|sources:3.1.0
 
