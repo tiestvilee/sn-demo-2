@@ -17,7 +17,7 @@ fun serveStaticData(): HttpHandler = { request ->
         else -> "*/*"
     }
     Response(Status.OK)
-        .header("Cache-Control", "public max-age=86400")
+        .header("Cache-Control", "public, max-age=86400")
         .header("ETag", filePath)
         .header("Content-Type", contentType)
         .body(Body(ByteBuffer.wrap(theFile.readBytes())))

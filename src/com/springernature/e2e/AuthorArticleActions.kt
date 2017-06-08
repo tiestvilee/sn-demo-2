@@ -34,6 +34,7 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
     val webForm = Body.webForm(FormValidator.Strict, titleParam, actionParam, formSelector).toLens()(request)
     val title = titleParam(webForm)
     val action = actionParam(webForm)
+    val selector = formSelector(webForm)
 
     if (action != "revert") {
         val newManuscript = manuscript.copy(title = MarkUp(title))
@@ -46,6 +47,7 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
     }
     val formSuffix = when(action) {
         "next" -> "abstract"
+        "selected" -> selector
         else -> "title"
     }
 
@@ -61,6 +63,7 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
     val webForm = Body.webForm(FormValidator.Strict, abstractParam, actionParam, formSelector).toLens()(request)
     val abstract = abstractParam(webForm)
     val action = actionParam(webForm)
+    val selector = formSelector(webForm)
 
     if (action != "revert") {
         val newManuscript = manuscript.copy(abstract = MarkUp(abstract))
@@ -69,6 +72,7 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
     }
     val formSuffix = when(action) {
         "previous" -> "title"
+        "selected" -> selector
         else -> "abstract"
     }
 

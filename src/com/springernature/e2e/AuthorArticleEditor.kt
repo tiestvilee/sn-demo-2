@@ -68,7 +68,8 @@ private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, c
                             attr("selected")
                         } else {
                             ""
-                        }))),
+                        })),
+                    button(id("formSelectorButton"), cl("hidden"), "name" attr "action", "value" attr "selected", "Go")),
                 *formRows,
                 div(cl("row"),
                     div(cl("col-lg-3"),
@@ -167,8 +168,16 @@ function copyInputBackedDivsOnFormSubmit() {
     }
 }
 
+function moveDirectlyToFormOnDropDownSelection() {
+    var select = document.querySelector("select[name=formSelector]");
+    select.addEventListener("change", function(e) {
+        document.querySelector("#formSelectorButton").click();
+    });
+}
+
 function contentLoaded() {
     copyInputBackedDivsOnFormSubmit();
+    moveDirectlyToFormOnDropDownSelection();
 }
 
 if (document.readyState === "complete" || (document.readyState !== "loading" && !document.documentElement.doScroll)) {
