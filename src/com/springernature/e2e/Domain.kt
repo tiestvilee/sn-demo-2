@@ -7,17 +7,17 @@ data class ManuscriptId(override val raw: UUID) : HasExternalForm<UUID>
 
 data class MarkUpFragment(val markUp: MarkUp, val approved: Boolean, val originalDocumentLocation: IntRange?) {
     val state: FragmentState
-        get() {
-            return if(markUp.raw.isNotEmpty()) {
-                if(approved) {
-                    FragmentState.approved
-                } else {
-                    FragmentState.valid
-                }
+        get() = if (markUp.raw.isNotEmpty()) {
+            if (approved) {
+                FragmentState.approved
             } else {
-                FragmentState.invalid
+                FragmentState.valid
             }
+        } else {
+            FragmentState.invalid
         }
+    val valid: Boolean
+        get() = !markUp.raw.isNullOrBlank()
 }
 
 data class Manuscript(val id: ManuscriptId, val title: MarkUpFragment, val abstract: MarkUpFragment)

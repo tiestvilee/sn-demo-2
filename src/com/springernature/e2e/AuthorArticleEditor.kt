@@ -30,17 +30,17 @@ val originalContent = """
 fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val manuscript = retrieveManuscript(dataContext, id)
+    val manuscript = Database.retrieveManuscript(dataContext, id)
 
-    authorEditPage(manuscript, originalContent, "title", htmlEditor("editable-title", manuscript.title.markUp.raw, "title"))
+    authorEditPage(manuscript, manuscript.title.state, originalContent, "title", htmlEditor("editable-title", manuscript.title.markUp.raw, "title"))
 }
 
 fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val manuscript = retrieveManuscript(dataContext, id)
+    val manuscript = Database.retrieveManuscript(dataContext, id)
 
-    authorEditPage(manuscript, originalContent, "abstract", htmlEditor("editable-abstract", manuscript.abstract.markUp.raw, "abstract"))
+    authorEditPage(manuscript, manuscript.abstract.state, originalContent, "abstract", htmlEditor("editable-abstract", manuscript.abstract.markUp.raw, "abstract"))
 }
 
 private fun htmlEditor(editorId: String, originalContent: String, fieldName: String) =
@@ -49,7 +49,7 @@ private fun htmlEditor(editorId: String, originalContent: String, fieldName: Str
         input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId)
     )
 
-private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, currentForm: String, vararg formRows: KTag): Response {
+private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState, originalManuscript: String, currentForm: String, vararg formRows: KTag): Response {
     return htmlPage(manuscript.title.markUp, div(cl("row"),
         div(cl("col-lg-4"),
             div(id("content"), cl("full-screen-height")),
@@ -80,8 +80,7 @@ private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, c
                         button("name" attr "action", "value" attr "revert", "Revert")
                     ),
                     div(cl("col-lg-3 input-group"),
-                        input(id("approved"), "type" attr "checkbox", "name" attr "approved", "checked" attr "checked", "tabindex" attr "0"),
-                        label("for" attr "approved", "approved")
+                        approvedCheckbox(fragmentState)
                     ),
                     div(cl("col-lg-3"),
                         button("name" attr "action", "value" attr "next", "Next")
@@ -93,6 +92,17 @@ private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, c
             p("typeset")
         )
     ))
+}
+
+private fun approvedCheckbox(fragmentState: FragmentState): List<KTag> {
+    return listOf(
+        input(id("approved"),
+            "type" attr "checkbox",
+            "name" attr "approved",
+            if (fragmentState == FragmentState.approved) listOf("checked" attr "checked") else listOf(),
+            "tabindex" attr "0"),
+        label("for" attr "approved", "approved")
+    )
 }
 
 enum class FragmentState(val asIcon: String) {

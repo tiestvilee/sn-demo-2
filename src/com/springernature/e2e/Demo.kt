@@ -17,8 +17,8 @@ import java.sql.DriverManager
 
 fun main(args: Array<String>) {
     java.lang.Class.forName("org.h2.Driver")
-    val conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "")
-    db.createDbTables(conn)
+    val conn = DriverManager.getConnection("jdbc:h2:./out/test", "sa", "")
+    Database.createDbTables(conn)
 
     val corsHeaders = listOf(
         "access-control-allow-origin" to "*",
