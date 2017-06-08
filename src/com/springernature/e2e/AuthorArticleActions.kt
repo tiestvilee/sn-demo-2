@@ -32,15 +32,15 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
     val manuscript = retrieveManuscript(dataContext, id)
 
     val webForm = Body.webForm(FormValidator.Strict, titleParam, actionParam, formSelector).toLens()(request)
-    val title = titleParam(webForm)
+    val title = MarkUp(titleParam(webForm))
     val action = actionParam(webForm)
     val selector = formSelector(webForm)
 
     if (action != "revert") {
-        val newManuscript = manuscript.copy(title = MarkUp(title))
+        val newManuscript = manuscript.copy(title = manuscript.title.copy(markUp = title))
 
         println("newManuscript = ${newManuscript}")
-        dataContext.update(db.manuscript).set(db.title, newManuscript.title.raw).where(db.manuscriptId.eq(id.raw)).execute()
+        dataContext.update(db.manuscript).set(db.title, newManuscript.title.markUp.raw).where(db.manuscriptId.eq(id.raw)).execute()
 
         println("dir " + actionParam(webForm))
         println("form " + formSelector(webForm))
@@ -61,14 +61,14 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
     val manuscript = retrieveManuscript(dataContext, id)
 
     val webForm = Body.webForm(FormValidator.Strict, abstractParam, actionParam, formSelector).toLens()(request)
-    val abstract = abstractParam(webForm)
+    val abstract = MarkUp(abstractParam(webForm))
     val action = actionParam(webForm)
     val selector = formSelector(webForm)
 
     if (action != "revert") {
-        val newManuscript = manuscript.copy(abstract = MarkUp(abstract))
+        val newManuscript = manuscript.copy(abstract = manuscript.abstract.copy(abstract))
         println("newManuscript = ${newManuscript}")
-        dataContext.update(db.manuscript).set(db.abstract, newManuscript.abstract.raw).where(db.manuscriptId.eq(id.raw)).execute()
+        dataContext.update(db.manuscript).set(db.abstract, newManuscript.abstract.markUp.raw).where(db.manuscriptId.eq(id.raw)).execute()
     }
     val formSuffix = when(action) {
         "previous" -> "title"

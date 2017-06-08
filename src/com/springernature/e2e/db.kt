@@ -2,7 +2,6 @@ package com.springernature.e2e
 
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
-import org.jooq.impl.DSL
 import org.jooq.impl.DSL.*
 import java.sql.Connection
 import java.util.*
@@ -28,6 +27,12 @@ object db {
 fun retrieveManuscript(dataContext: DSLContext, id: ManuscriptId): Manuscript {
     val record = dataContext.select(db.title, db.abstract).from(db.manuscript).where(db.manuscriptId.eq(id.raw)).fetchOne()
     return record
-        ?.let { Manuscript(id, MarkUp(it.value1() ?: "Manuscript: ${id.raw}"), MarkUp(it.value2() ?: "")) }
+        ?.let {
+            Manuscript(
+                id,
+                MarkUpFragment(MarkUp(it.value1() ?: "Manuscript: ${id.raw}"), false, null),
+                MarkUpFragment(MarkUp(it.value2() ?: ""), false, null)
+            )
+        }
         ?: throw RuntimeException("not found")
 }

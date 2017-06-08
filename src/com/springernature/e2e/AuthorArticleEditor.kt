@@ -32,7 +32,7 @@ fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = retrieveManuscript(dataContext, id)
 
-    authorEditPage(manuscript, originalContent, "title", htmlEditor("editable-title", manuscript.title.raw, "title"))
+    authorEditPage(manuscript, originalContent, "title", htmlEditor("editable-title", manuscript.title.markUp.raw, "title"))
 }
 
 fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
@@ -40,7 +40,7 @@ fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = retrieveManuscript(dataContext, id)
 
-    authorEditPage(manuscript, originalContent, "abstract", htmlEditor("editable-abstract", manuscript.abstract.raw, "abstract"))
+    authorEditPage(manuscript, originalContent, "abstract", htmlEditor("editable-abstract", manuscript.abstract.markUp.raw, "abstract"))
 }
 
 private fun htmlEditor(editorId: String, originalContent: String, fieldName: String) =
@@ -50,7 +50,7 @@ private fun htmlEditor(editorId: String, originalContent: String, fieldName: Str
     )
 
 private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, currentForm: String, vararg formRows: KTag): Response {
-    return htmlPage(manuscript.title, div(cl("row"),
+    return htmlPage(manuscript.title.markUp, div(cl("row"),
         div(cl("col-lg-4"),
             div(id("content"), cl("full-screen-height")),
             div(id("original-content"), cl("hidden"), originalManuscript)
@@ -60,12 +60,12 @@ private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, c
                 div(cl("row"),
                     select(cl("form-selector"),
                         "name" attr "formSelector",
-                        option("value" attr "title", manuscript.titleState.asIcon + " Title", if (currentForm == "title") {
+                        option("value" attr "title", manuscript.title.state.asIcon + " Title", if (currentForm == "title") {
                             attr("selected")
                         } else {
                             ""
                         }),
-                        option("value" attr "abstract", manuscript.abstractState.asIcon + " Abstract", if (currentForm == "abstract") {
+                        option("value" attr "abstract", manuscript.abstract.state.asIcon + " Abstract", if (currentForm == "abstract") {
                             attr("selected")
                         } else {
                             ""
@@ -96,14 +96,8 @@ private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, c
 }
 
 enum class FragmentState(val asIcon: String) {
-    invalid("❌"), valid("🔀"), accepted("✅");
+    invalid("❌"), valid("🔀"), approved("✅");
 }
-
-private val Manuscript.titleState: FragmentState
-    get() = if (this.title.raw.isNotEmpty()) FragmentState.accepted else FragmentState.invalid
-
-private val Manuscript.abstractState: FragmentState
-    get() = if (this.abstract.raw.isNotEmpty()) FragmentState.accepted else FragmentState.invalid
 
 fun redirectToTitle(): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
