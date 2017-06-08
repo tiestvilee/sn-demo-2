@@ -45,14 +45,15 @@ fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
 
 private fun htmlEditor(editorId: String, originalContent: String, fieldName: String) =
     div(cl("row responsive-margin bordered rounded"),
-        div(id(editorId), "style" attr "width:100%", "contenteditable" attr "true", originalContent),
+        div(id(editorId), cl("html-editor"), "contenteditable" attr "true", originalContent),
         input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId)
     )
 
 private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, currentForm: String, vararg formRows: KTag): Response {
     return htmlPage(manuscript.title, div(cl("row"),
         div(cl("col-lg-4"),
-            div(cl("full-screen-height"), originalManuscript)
+            div(id("content"), cl("full-screen-height")),
+            div(id("original-content"), cl("hidden"), originalManuscript)
         ),
         div(cl("col-lg-4"),
             form("method" attr "POST",
@@ -154,6 +155,17 @@ val styles = """
     width: 100%;
     font-size: 24pt;
 }
+.html-editor {
+    width: 100%;
+}
+
+.selected {
+	background: #FFAAAA;
+}
+[data-already-used] {
+	-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;
+	background: #AAAAAA;
+}
 """
 
 val scripts = """
@@ -175,9 +187,105 @@ function moveDirectlyToFormOnDropDownSelection() {
     });
 }
 
+
+function resetToOriginalManuscript(from, to) {
+	to.innerHTML = "";
+	var children = from.childNodes;
+
+	for (var i = 0; i < children.length; i++) {
+		to.appendChild(children[i].cloneNode(true));
+	}
+}
+
+function getStartAndEndBlocksFromSelection(doThis) {
+	function findParentDataIndex(start) {
+		while(start != null && !(start.attributes && start.attributes.hasOwnProperty("data-index"))) {
+			start = start.parentElement
+		}
+		return (start && start.attributes && start.attributes["data-index"]) ? start.attributes["data-index"].value : null;
+	}
+
+	var selection = document.getSelection();
+	if(selection.isCollapsed) {
+		return;
+	}
+
+	var range = selection.getRangeAt(0);
+
+	var startIndex = findParentDataIndex(range.startContainer)
+	var endIndex = findParentDataIndex(range.endContainer)
+
+	if(startIndex == null || endIndex == null) {
+		return;
+	}
+
+	if(range.endOffset === 0) {
+		endIndex -= 1;
+	}
+
+	return doThis(startIndex, endIndex);
+}
+
+function updateUiWithSelection(originalContent, content, current) {
+	return function (startIndex, endIndex) {
+
+			resetToOriginalManuscript(originalContent, content)
+
+			start = content.querySelector("[data-index='" + startIndex + "']")
+
+			var newNode = document.createElement('div')
+			newNode.className = "selected"
+			current.innerHTML = "";
+
+			start.parentElement.insertBefore(newNode, start)
+			var childers = start.parentElement.childNodes;
+			var copying = false;
+			for (var i = 0; i < childers.length; i++) {
+				var index = (childers[i].attributes && childers[i].attributes["data-index"] ? childers[i].attributes["data-index"].value : null);
+				if (index==startIndex) {
+					copying = true;
+				}
+				if(copying) {
+					if(childers[i].attributes && childers[i].attributes.hasOwnProperty("data-already-used")) {
+						resetToOriginalManuscript(originalContent, content);
+						return;
+					}
+					current.appendChild(childers[i].cloneNode(true))
+					newNode.appendChild(childers[i])
+				}
+				if (index==endIndex) {
+					break;
+				}
+			}
+			content.attributes["data-dirty"] = "true";
+		}
+}
+
+function copyContentSelectionBlockToForm() {
+	var content = document.querySelector("#content");
+	var originalContent = document.querySelector("#original-content");
+	var current = document.querySelector(".html-editor");
+
+	resetToOriginalManuscript(originalContent, content)
+
+	function selectCurrentBlock() {
+		getStartAndEndBlocksFromSelection(
+			updateUiWithSelection(originalContent, content, current));
+		document.getSelection().collapse();
+	}
+
+	var oldTimeout = null;
+	content.addEventListener("mouseup", function(e) {
+		if(oldTimeout) clearTimeout(oldTimeout);
+		oldTimeout = setTimeout(selectCurrentBlock, 100);
+		return true;
+	})
+};
+
 function contentLoaded() {
     copyInputBackedDivsOnFormSubmit();
     moveDirectlyToFormOnDropDownSelection();
+    copyContentSelectionBlockToForm();
 }
 
 if (document.readyState === "complete" || (document.readyState !== "loading" && !document.documentElement.doScroll)) {
