@@ -16,7 +16,7 @@ val originalContent = """
 <p data-index="2">May 22nd, 2017</p>
 <p data-index="3">In 2008, I worked on Boots.com. They wanted a single-page checkout with the trendiest of techniques from that era, including accordions, AJAX and client-side validation.</p>
 
-<p data-index="4" data-already-used>Each step (delivery address, delivery options and credit-card details) had an accordion panel. Each panel was submitted via AJAX. Upon successful submission, the panel collapsed and the next one opened, with a sliding transition.</p>
+<p data-index="4">Each step (delivery address, delivery options and credit-card details) had an accordion panel. Each panel was submitted via AJAX. Upon successful submission, the panel collapsed and the next one opened, with a sliding transition.</p>
 
 <p data-index="5">It looked a little like this:</p>
 
@@ -32,7 +32,9 @@ fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
-    authorEditPage(manuscript, manuscript.title.state, originalContent, "title", htmlEditor("editable-title", manuscript.title.markUp.raw, "title"))
+    val fragment = manuscript.title
+    authorEditPage(manuscript, fragment.state, originalContent.reserve(manuscript.abstract.originalDocumentLocation), "title",
+        htmlEditor("editable-title", fragment.markUp.raw, fragment.originalDocumentLocation, "title"))
 }
 
 fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
@@ -40,13 +42,26 @@ fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
-    authorEditPage(manuscript, manuscript.abstract.state, originalContent, "abstract", htmlEditor("editable-abstract", manuscript.abstract.markUp.raw, "abstract"))
+    val fragment = manuscript.abstract
+    authorEditPage(manuscript, fragment.state, originalContent.reserve(manuscript.title.originalDocumentLocation), "abstract",
+        htmlEditor("editable-abstract", fragment.markUp.raw, fragment.originalDocumentLocation, "abstract"))
 }
 
-private fun htmlEditor(editorId: String, originalContent: String, fieldName: String) =
+private fun String.reserve(vararg reservationRanges: IntRange?): String =
+    reservationRanges.asList()
+        .filterNotNull()
+        .fold(this,
+            { acc, range ->
+                range.fold(acc,
+                    { acc2, index -> acc2.replace("data-index=\"$index\"", "data-index=\"$index\" data-already-used") })
+            })
+
+private fun htmlEditor(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String) =
     div(cl("row responsive-margin bordered rounded"),
         div(id(editorId), cl("html-editor"), "contenteditable" attr "true", originalContent),
-        input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId)
+        input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId),
+        input("type" attr "hidden", "name" attr "selectionStart", "value" attr (originalContentSelection?.first?.toString() ?: "")),
+        input("type" attr "hidden", "name" attr "selectionEnd", "value" attr (originalContentSelection?.last?.toString() ?: ""))
     )
 
 private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState, originalManuscript: String, currentForm: String, vararg formRows: KTag): Response {
@@ -230,7 +245,7 @@ function getStartAndEndBlocksFromSelection(doThis) {
 	return doThis(startIndex, endIndex);
 }
 
-function updateUiWithSelection(originalContent, content, current) {
+function updateUiWithSelection(originalContent, content, current, selectionStart, selectionEnd) {
 	return function (startIndex, endIndex) {
 
 			resetToOriginalManuscript(originalContent, content)
@@ -261,6 +276,8 @@ function updateUiWithSelection(originalContent, content, current) {
 					break;
 				}
 			}
+            selectionStart.value = startIndex;
+            selectionEnd.value = endIndex;
 			content.attributes["data-dirty"] = "true";
 		}
 }
@@ -269,12 +286,14 @@ function copyContentSelectionBlockToForm() {
 	var content = document.querySelector("#content");
 	var originalContent = document.querySelector("#original-content");
 	var current = document.querySelector(".html-editor");
+    var selectionStart = document.querySelector("input[name='selectionStart']");
+    var selectionEnd = document.querySelector("input[name='selectionEnd']");
 
 	resetToOriginalManuscript(originalContent, content)
 
 	function selectCurrentBlock() {
 		getStartAndEndBlocksFromSelection(
-			updateUiWithSelection(originalContent, content, current));
+			updateUiWithSelection(originalContent, content, current, selectionStart, selectionEnd));
 		document.getSelection().collapse();
 	}
 

@@ -33,6 +33,8 @@ val titleParam = FormField.string().required("title")
 val abstractParam = FormField.string().required("abstract")
 val approvedParam = FormField.checkbox().optional("approved")
 val actionParam = FormField.string().required("action")
+val selectionStartParam = FormField.string().required("selectionStart")
+val selectionEndParam = FormField.string().required("selectionEnd")
 val formSelector = FormField.string().required("formSelector")
 
 fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
@@ -40,15 +42,16 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
-    val webForm = Body.webForm(FormValidator.Strict, titleParam, actionParam, formSelector, approvedParam).toLens()(request)
+    val webForm = Body.webForm(FormValidator.Strict, titleParam, actionParam, formSelector, approvedParam, selectionStartParam, selectionEndParam).toLens()(request)
     val title = MarkUp(titleParam(webForm))
     val action = actionParam(webForm)
     val selector = formSelector(webForm)
     val approved = approvedParam(webForm)
+    val selection = selectionFrom(webForm)
 
     if (action != "revert") {
         val newManuscript = manuscript.copy(
-            title = updateMarkUpFragment(title, approved ?: false, manuscript.title)
+            title = updateMarkUpFragment(title, approved ?: false, manuscript.title, selection)
         )
         println("newManuscript = ${newManuscript}")
         Database.saveManuscriptToDb(dataContext, newManuscript)
@@ -68,15 +71,16 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
-    val webForm = Body.webForm(FormValidator.Strict, abstractParam, actionParam, formSelector, approvedParam).toLens()(request)
+    val webForm = Body.webForm(FormValidator.Strict, abstractParam, actionParam, formSelector, approvedParam, selectionStartParam, selectionEndParam).toLens()(request)
     val abstract = MarkUp(abstractParam(webForm))
     val action = actionParam(webForm)
     val selector = formSelector(webForm)
     val approved = approvedParam(webForm)
+    val selection = selectionFrom(webForm)
 
     if (action != "revert") {
         val newManuscript = manuscript.copy(
-            abstract = updateMarkUpFragment(abstract, approved ?: false, manuscript.abstract)
+            abstract = updateMarkUpFragment(abstract, approved ?: false, manuscript.abstract, selection)
         )
         println("newManuscript = ${newManuscript}")
         Database.saveManuscriptToDb(dataContext, newManuscript)
@@ -91,8 +95,19 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
         .header("Location", "/article/${id.raw}/$formSuffix")
 }
 
-private fun updateMarkUpFragment(markUp: MarkUp, approved: Boolean, markUpFragment: MarkUpFragment): MarkUpFragment {
-    val updateMarkup = markUpFragment.copy(markUp = markUp)
+fun selectionFrom(webForm: WebForm): IntRange? {
+    val start = selectionStartParam(webForm)
+    val end = selectionEndParam(webForm)
+
+    return if(start.isNotEmpty() && end.isNotEmpty()) {
+        IntRange(start.toInt(), end.toInt())
+    } else {
+        null
+    }
+}
+
+private fun updateMarkUpFragment(markUp: MarkUp, approved: Boolean, markUpFragment: MarkUpFragment, selection: IntRange?): MarkUpFragment {
+    val updateMarkup = markUpFragment.copy(markUp = markUp, originalDocumentLocation = selection)
     return updateMarkup.copy(approved = if (updateMarkup.valid) approved else false)
 }
 
