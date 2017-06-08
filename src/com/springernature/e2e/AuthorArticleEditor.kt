@@ -32,12 +32,7 @@ fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = retrieveManuscript(dataContext, id)
 
-    authorEditPage(manuscript, originalContent, "title",
-        div(cl("row"),
-            input("style" attr "width:100%",
-                "name" attr "title",
-                "type" attr "text",
-                "value" attr manuscript.title.raw)))
+    authorEditPage(manuscript, originalContent, "title", htmlEditor("editable-title", manuscript.title.raw, "title"))
 }
 
 fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
@@ -45,12 +40,14 @@ fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = retrieveManuscript(dataContext, id)
 
-    authorEditPage(manuscript, originalContent, "abstract",
-        div(cl("row"),
-        textarea("style" attr "width:100%",
-            "name" attr "abstract",
-            manuscript.abstract.raw)))
+    authorEditPage(manuscript, originalContent, "abstract", htmlEditor("editable-abstract", manuscript.abstract.raw, "abstract"))
 }
+
+private fun htmlEditor(editorId: String, originalContent: String, fieldName: String) =
+    div(cl("row responsive-margin bordered rounded"),
+        div(id(editorId), "style" attr "width:100%", "contenteditable" attr "true", originalContent),
+        input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId)
+    )
 
 private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, currentForm: String, vararg formRows: KTag): Response {
     return htmlPage(manuscript.title, div(cl("row"),
@@ -62,8 +59,16 @@ private fun authorEditPage(manuscript: Manuscript, originalManuscript: String, c
                 div(cl("row"),
                     select(cl("form-selector"),
                         "name" attr "formSelector",
-                        option("value" attr "title", manuscript.titleState.asIcon + " Title", if(currentForm == "title") { attr("selected")} else {""}),
-                        option("value" attr "abstract", manuscript.abstractState.asIcon + " Abstract", if(currentForm == "abstract") { attr("selected")} else {""}))),
+                        option("value" attr "title", manuscript.titleState.asIcon + " Title", if (currentForm == "title") {
+                            attr("selected")
+                        } else {
+                            ""
+                        }),
+                        option("value" attr "abstract", manuscript.abstractState.asIcon + " Abstract", if (currentForm == "abstract") {
+                            attr("selected")
+                        } else {
+                            ""
+                        }))),
                 *formRows,
                 div(cl("row"),
                     div(cl("col-lg-3"),
@@ -150,6 +155,29 @@ val styles = """
 }
 """
 
+val scripts = """
+
+function copyInputBackedDivsOnFormSubmit() {
+    for (form of Array.from(document.querySelectorAll("form"))) {
+        form.addEventListener("submit", function(e) {
+            for (hiddenInput of Array.from(form.querySelectorAll(".input-backing-for-div"))) {
+                hiddenInput.value = form.querySelector("#" + hiddenInput.attributes["data-for"].value).innerHTML;
+            }
+        });
+    }
+}
+
+function contentLoaded() {
+    copyInputBackedDivsOnFormSubmit();
+}
+
+if (document.readyState === "complete" || (document.readyState !== "loading" && !document.documentElement.doScroll)) {
+  contentLoaded();
+} else {
+  document.addEventListener("DOMContentLoaded", contentLoaded);
+}
+"""
+
 private fun htmlPage(title: MarkUp, content: KTag): Response {
     return Response(Status.OK).header("Content-Type", "${ContentType.TEXT_HTML.value}; charset=utf-8").body(
         page(title, content).toCompactHtml()
@@ -172,6 +200,7 @@ private fun page(title: MarkUp, content: KTag): KTag {
                 footer(
                     div(cl("col-sm col-md-10 col-md-offset-1"),
                         p("Copyright &copy; SpringerNature ${ZonedDateTime.now().year}"))
-                )
+                ),
+                script(scripts)
             )))
 }

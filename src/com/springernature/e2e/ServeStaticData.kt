@@ -9,6 +9,16 @@ import java.io.File
 import java.nio.ByteBuffer
 
 fun serveStaticData(): HttpHandler = { request ->
+    val filePath = request.path("path")
+    val theFile = File("static/$filePath")
+    val contentType = when(theFile.extension) {
+        "png" -> "image/png"
+        "js" -> "application/javascript"
+        else -> "*/*"
+    }
     Response(Status.OK)
-        .body(Body(ByteBuffer.wrap(File("static/${request.path("path")}").readBytes())))
+        .header("Cache-Control", "public max-age=86400")
+        .header("ETag", filePath)
+        .header("Content-Type", contentType)
+        .body(Body(ByteBuffer.wrap(theFile.readBytes())))
 }
