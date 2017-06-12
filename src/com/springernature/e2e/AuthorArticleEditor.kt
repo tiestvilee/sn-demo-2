@@ -59,9 +59,17 @@ fun asXml(dataContext: DSLContext): HttpHandler = { request ->
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
-    Response(Status.OK).header("Content-Type", "application/xml; charset=utf-8").body(
-        jatsFrom(manuscript).asString()
-    )
+    Response(Status.OK).header("Content-Type", "application/xml; charset=utf-8")
+        .body(jatsFrom(manuscript).asString())
+}
+
+fun asPdf(dataContext: DSLContext): HttpHandler = { request ->
+    val id = ManuscriptId(UUID.fromString(request.path("id")!!))
+
+    val manuscript = Database.retrieveManuscript(dataContext, id)
+
+    Response(Status.OK).header("Content-Type", "application/pdf; charset=utf-8")
+        .body(org.http4k.core.Body(pdfFrom(manuscript)))
 }
 
 fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
@@ -387,7 +395,8 @@ private fun page(title: MarkUp, content: KTag): KTag {
                 header(cl("sticky row"),
                     div(cl("col-sm col-md-10, col-md-offset-1"),
                         a("href" attr "/editor/manuscript", "role" attr "button", "Manuscripts"),
-                        a("href" attr "asXml", "role" attr "button", "As XML")
+                        a("href" attr "asXml", "role" attr "button", "As XML"),
+                        a("href" attr "asPdf", "role" attr "button", "As PDF")
                     )),
                 div(cl("container"), content),
                 footer(

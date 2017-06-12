@@ -23,3 +23,8 @@ mvn:org.eclipse.jetty:jetty-server:jar|sources:9.2.12.v20150709
 mvn:org.eclipse.jetty:jetty-servlet:jar|sources:9.2.12.v20150709
 mvn:org.eclipse.jetty:jetty-webapp:jar|sources:9.2.12.v20150709
 mvn:org.eclipse.jetty:jetty-security:jar|sources:9.2.12.v20150709
+
+# PDFs
+mvn:org.apache.pdfbox:pdfbox:jar|sources:2.0.4
+mvn:commons-logging:commons-logging:jar|sources:1.2
+mvn:org.apache.pdfbox:fontbox:jar|sources:2.0.4

@@ -60,7 +60,7 @@ fun  jatsFrom(manuscript: Manuscript): Document {
     return document
 }
 
-private fun MarkUp.toXmlstring(): String {
+fun MarkUp.toXmlstring(): String {
     return this.raw.replace(Regex("<br[^>]*>"),"")
 }
 
