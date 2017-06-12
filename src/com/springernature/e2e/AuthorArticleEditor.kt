@@ -54,6 +54,16 @@ val originalContent = """
 <p data-index="40">After DNase treatment, total RNA (2 μg) was used to produce cDNA with the Omniscript RT Kit (Qiagen, Valencia, CA, USA). The cDNA was used as the template for qRT-PCR using FastStart Universal SYBR Green Master (Roche, Indianapolis, IN, USA). The reaction was run on the LightCycler® 96 System (Roche, Pleasanton, CA, USA). The relative expression level of a gene was quantified using the expression value of cotton GhUBQ10 as an internal control using the primers (Additional file 10: Table S9).</p>
 """
 
+fun asXml(dataContext: DSLContext): HttpHandler = { request ->
+    val id = ManuscriptId(UUID.fromString(request.path("id")!!))
+
+    val manuscript = Database.retrieveManuscript(dataContext, id)
+
+    Response(Status.OK).header("Content-Type", "application/xml; charset=utf-8").body(
+        jatsFrom(manuscript).asString()
+    )
+}
+
 fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
@@ -376,7 +386,9 @@ private fun page(title: MarkUp, content: KTag): KTag {
             body(
                 header(cl("sticky row"),
                     div(cl("col-sm col-md-10, col-md-offset-1"),
-                        a("href" attr "/editor/manuscript", "role" attr "button", "Manuscripts"))),
+                        a("href" attr "/editor/manuscript", "role" attr "button", "Manuscripts"),
+                        a("href" attr "asXml", "role" attr "button", "As XML")
+                    )),
                 div(cl("container"), content),
                 footer(
                     div(cl("col-sm col-md-10 col-md-offset-1"),

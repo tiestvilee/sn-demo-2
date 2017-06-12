@@ -65,7 +65,15 @@ object Xml {
 
     fun document(xml: String): Document =
         try {
-            domFactory.newDocumentBuilder().parse(
+            domFactory.isValidating = false
+            domFactory.isNamespaceAware = true
+            domFactory.setFeature("http://xml.org/sax/features/namespaces", false)
+            domFactory.setFeature("http://xml.org/sax/features/validation", false)
+            domFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false)
+            domFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+
+            val documentBuilder = domFactory.newDocumentBuilder()
+            documentBuilder.parse(
                 ByteArrayInputStream(xml.toByteArray(charset("UTF-8")))
             )
         } catch (ex: UnsupportedEncodingException) {

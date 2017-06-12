@@ -36,6 +36,7 @@ fun main(args: Array<String>) {
         .then(
             dbSession(conn, { dataContext ->
                 cors(routes(
+                    "/article/{id:.+}/asXml" to GET by asXml(dataContext),
                     "/article/{id:.+}/title" to GET by updateTitleForm(dataContext),
                     "/article/{id:.+}/title" to POST by updateTitle(dataContext),
                     "/article/{id:.+}/abstract" to GET by updateAbstractForm(dataContext),
