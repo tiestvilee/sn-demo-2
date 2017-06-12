@@ -12,7 +12,10 @@ import java.util.*
 fun createArticle(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.randomUUID())
 
-    dataContext.insertInto(Database.manuscript, Database.manuscriptId).values(id.raw).execute()
+    dataContext
+        .insertInto(Database.manuscript, Database.manuscriptId, Database.content)
+        .values(id.raw, originalContent)
+        .execute()
 
     Response(Status.Companion.SEE_OTHER)
         .header("Location", "/article/${id.raw}")
@@ -43,7 +46,7 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
     val webForm = Body.webForm(FormValidator.Strict, titleParam, actionParam, formSelector, approvedParam, selectionStartParam, selectionEndParam).toLens()(request)
-    val title = MarkUp(titleParam(webForm))
+    val title = MarkUp(titleParam(webForm).replace(Regex("<p[^>]*>"), "").replace(Regex("</p[^>]*>"), ""))
     val action = actionParam(webForm)
     val selector = formSelector(webForm)
     val approved = approvedParam(webForm)
@@ -54,7 +57,7 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
             title = updateMarkUpFragment(title, approved ?: false, manuscript.title, selection)
         )
         println("newManuscript = ${newManuscript}")
-        Database.saveManuscriptToDb(dataContext, newManuscript)
+        Database.saveManuscriptToDb(dataContext, updateContentFrom(newManuscript))
     }
     val formSuffix = when (action) {
         "next" -> "abstract"
@@ -83,7 +86,7 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
             abstract = updateMarkUpFragment(abstract, approved ?: false, manuscript.abstract, selection)
         )
         println("newManuscript = ${newManuscript}")
-        Database.saveManuscriptToDb(dataContext, newManuscript)
+        Database.saveManuscriptToDb(dataContext, updateContentFrom(newManuscript))
     }
     val formSuffix = when (action) {
         "previous" -> "title"
@@ -95,11 +98,42 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
         .header("Location", "/article/${id.raw}/$formSuffix")
 }
 
+fun updateContentFrom(manuscript: Manuscript): Manuscript {
+    val doc = Xml.document("<root>$originalContent</root>")
+    val titleRange = manuscript.title.originalDocumentLocation ?: (-1..-1)
+    val abstractRange = manuscript.abstract.originalDocumentLocation ?: (-1..-1)
+
+    val nodes = doc.documentElement.childNodes
+    var index = 0
+    while(index < nodes.length) {
+        val node = nodes.item(index)
+        if(node.hasAttributes()) {
+            val nodeIndex = Integer.parseInt(node.attributes.getNamedItem("data-index").nodeValue)
+            when (nodeIndex) {
+                in titleRange -> doc.documentElement.removeChild(node)
+                in abstractRange -> doc.documentElement.removeChild(node)
+                else -> {
+                    index++
+                }
+            }
+        } else {
+            index++
+        }
+    }
+
+    return manuscript
+        .copy(content = manuscript.content
+            .copy(markUp = MarkUp(doc.asString()
+                .replace("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>", "")
+                .replace("<root>", "")
+                .replace("</root>", ""))))
+}
+
 fun selectionFrom(webForm: WebForm): IntRange? {
     val start = selectionStartParam(webForm)
     val end = selectionEndParam(webForm)
 
-    return if(start.isNotEmpty() && end.isNotEmpty()) {
+    return if (start.isNotEmpty() && end.isNotEmpty()) {
         IntRange(start.toInt(), end.toInt())
     } else {
         null

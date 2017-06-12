@@ -20,4 +20,5 @@ data class MarkUpFragment(val markUp: MarkUp, val approved: Boolean, val origina
         get() = !markUp.raw.isNullOrBlank()
 }
 
-data class Manuscript(val id: ManuscriptId, val title: MarkUpFragment, val abstract: MarkUpFragment)
+data class Manuscript(val id: ManuscriptId, val title: MarkUpFragment, val abstract: MarkUpFragment, val content: MarkUpFragment) {
+}

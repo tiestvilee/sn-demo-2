@@ -17,6 +17,8 @@ object Database {
     val abstractApproved = field("abstract_approved", Boolean::class.java)!!
     val abstractStart = field("abstract_start", Integer::class.java)!!
     val abstractEnd = field("abstract_end", Integer::class.java)!!
+    val content = field("content", String::class.java)!!
+    val contentApproved = field("content_approved", Boolean::class.java)!!
 
     fun createDbTables(conn: Connection) {
         val dataContext = using(conn, SQLDialect.H2)
@@ -29,9 +31,11 @@ object Database {
             .column(titleStart)
             .column(titleEnd)
             .column(abstract)
-            .column(abstractApproved)
             .column(abstractStart)
             .column(abstractEnd)
+            .column(abstractApproved)
+            .column(content)
+            .column(contentApproved)
             .execute()
     }
 
@@ -39,7 +43,9 @@ object Database {
         val record = dataContext
             .select(
                 Database.title, Database.titleApproved, Database.titleStart, Database.titleEnd,
-                Database.abstract, Database.abstractApproved, Database.abstractStart, Database.abstractEnd)
+                Database.abstract, Database.abstractApproved, Database.abstractStart, Database.abstractEnd,
+                Database.content, Database.contentApproved
+                )
             .from(Database.manuscript)
             .where(Database.manuscriptId.eq(id.raw)).fetchOne()
         return record
@@ -47,7 +53,8 @@ object Database {
                 val result = Manuscript(
                     id,
                     MarkUpFragment(MarkUp(it.value1() ?: ""), it.value2() ?: false, intRangeFromDbFields(it.value3()?.toInt(), it.value4()?.toInt())),
-                    MarkUpFragment(MarkUp(it.value5() ?: ""), it.value6() ?: false, intRangeFromDbFields(it.value7()?.toInt(), it.value8()?.toInt()))
+                    MarkUpFragment(MarkUp(it.value5() ?: ""), it.value6() ?: false, intRangeFromDbFields(it.value7()?.toInt(), it.value8()?.toInt())),
+                    MarkUpFragment(MarkUp(it.value9() ?: ""), it.value10() ?: false, null)
                 )
                 println(">>>>>>>>>> result = $result")
                 result
@@ -76,6 +83,8 @@ object Database {
             .set(Database.abstractEnd, manuscript.abstract.originalDocumentLocation?.let {
                 Integer(manuscript.abstract.originalDocumentLocation.last)
             })
+            .set(Database.content, manuscript.content.markUp.raw)
+            .set(Database.contentApproved, manuscript.content.approved)
             .where(Database.manuscriptId.eq(manuscript.id.raw)).execute()
     }
 }
