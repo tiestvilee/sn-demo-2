@@ -4,7 +4,7 @@ import org.http4k.core.*
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.filter.DebuggingFilters
-import org.http4k.routing.by
+import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.startServer
@@ -36,16 +36,16 @@ fun main(args: Array<String>) {
         .then(
             dbSession(conn, { dataContext ->
                 cors(routes(
-                    "/article/{id:.+}/asXml" to GET by asXml(dataContext),
-                    "/article/{id:.+}/asPdf" to GET by asPdf(dataContext),
-                    "/article/{id:.+}/title" to GET by updateTitleForm(dataContext),
-                    "/article/{id:.+}/title" to POST by updateTitle(dataContext),
-                    "/article/{id:.+}/abstract" to GET by updateAbstractForm(dataContext),
-                    "/article/{id:.+}/abstract" to POST by updateAbstract(dataContext),
-                    "/article/{id:.+}" to GET by redirectToTitle(),
-                    "/article" to GET by createArticleForm(),
-                    "/article" to POST by createArticle(dataContext),
-                    "/static/{path:.*}" to GET by serveStaticData()
+                    "/article/{id:.+}/asXml" to GET bind asXml(dataContext),
+                    "/article/{id:.+}/asPdf" to GET bind asPdf(dataContext),
+                    "/article/{id:.+}/title" to GET bind updateTitleForm(dataContext),
+                    "/article/{id:.+}/title" to POST bind updateTitle(dataContext),
+                    "/article/{id:.+}/abstract" to GET bind updateAbstractForm(dataContext),
+                    "/article/{id:.+}/abstract" to POST bind updateAbstract(dataContext),
+                    "/article/{id:.+}" to GET bind redirectToTitle(),
+                    "/article" to GET bind createArticleForm(),
+                    "/article" to POST bind createArticle(dataContext),
+                    "/static/{path:.*}" to GET bind serveStaticData()
                 ))
             })
         )
