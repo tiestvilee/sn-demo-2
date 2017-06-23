@@ -17,18 +17,26 @@ interface Jsonable {
     }
 }
 
-data class CreateManuscript(val originalContent: String) : Jsonable
-data class SetMarkupFragment(val id: ManuscriptId, val fragmentName: String, val fragment: MarkUpFragment) : Jsonable
+interface TransactionEvent : Jsonable {
 
-private fun logEvent(dataContext: DSLContext, id: ManuscriptId, event: String) {
-    dataContext.insertInto(Database.transactionLog, Database.transactionId, Database.manuscriptId, Database.payload)
-        .values(Database.transactionIdSequence.nextval(), `val`(id.raw), `val`(event)).execute()
+}
+
+data class CreateManuscript(val originalContent: String) : TransactionEvent
+data class SetMarkupFragment(val id: ManuscriptId, val fragmentName: String, val fragment: MarkUpFragment) : TransactionEvent
+
+private fun logEvent(dataContext: DSLContext, id: ManuscriptId, event: TransactionEvent) {
+    dataContext.insertInto(Database.transactionLog, Database.transactionId, Database.transactionType, Database.manuscriptId, Database.payload)
+        .values(
+            Database.transactionIdSequence.nextval(),
+            `val`(event.javaClass.simpleName),
+            `val`(id.raw),
+            `val`(event.toJson())).execute()
 }
 
 fun createArticle(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.randomUUID())
 
-    logEvent(dataContext, id, CreateManuscript(originalContent).toJson())
+    logEvent(dataContext, id, CreateManuscript(originalContent))
 
     dataContext
         .insertInto(Database.manuscript, Database.manuscriptId, Database.content)
@@ -76,7 +84,7 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
         )
         println("newManuscript = ${newManuscript}")
         if (newManuscript != manuscript) {
-            logEvent(dataContext, id, SetMarkupFragment(id, "title", newManuscript.title).toJson())
+            logEvent(dataContext, id, SetMarkupFragment(id, "title", newManuscript.title))
             Database.saveManuscriptToDb(dataContext, updateContentFrom(newManuscript))
         }
     }
@@ -108,7 +116,7 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
         )
         println("newManuscript = ${newManuscript}")
         if (newManuscript != manuscript) {
-            logEvent(dataContext, id, SetMarkupFragment(id, "abstract", newManuscript.abstract).toJson())
+            logEvent(dataContext, id, SetMarkupFragment(id, "abstract", newManuscript.abstract))
             Database.saveManuscriptToDb(dataContext, updateContentFrom(newManuscript))
         }
     }

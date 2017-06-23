@@ -4,6 +4,8 @@
     <list default="true" id="2c8d7ee3-6590-40f0-b606-8e4aae1faa1f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/Database.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/Database.kt" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,11 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthorArticleActions.kt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AuthorArticleActions.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="137">
-              <caret line="112" column="9" lean-forward="false" selection-start-line="112" selection-start-column="9" selection-end-line="112" selection-end-column="9" />
+            <state relative-caret-position="264">
+              <caret line="118" column="95" lean-forward="false" selection-start-line="118" selection-start-column="95" selection-end-line="118" selection-end-column="95" />
               <folding>
                 <element signature="e#32#317#0" expanded="true" />
               </folding>
@@ -61,18 +63,21 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="166">
               <caret line="93" column="13" lean-forward="false" selection-start-line="93" selection-start-column="13" selection-end-line="93" selection-end-column="13" />
-              <folding />
+              <folding>
+                <element signature="e#0#2139#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthorArticleEditor.kt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="AuthorArticleEditor.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
-              <caret line="68" column="89" lean-forward="false" selection-start-line="68" selection-start-column="89" selection-end-line="68" selection-end-column="89" />
+              <caret line="69" column="28" lean-forward="false" selection-start-line="69" selection-start-column="28" selection-end-line="69" selection-end-column="28" />
               <folding>
-                <element signature="e#32#513#0" expanded="true" />
+                <element signature="e#32#568#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -121,8 +126,8 @@
       <file leaf-file-name="Database.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Database.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="11" column="8" lean-forward="false" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
+            <state relative-caret-position="-60">
+              <caret line="12" column="46" lean-forward="false" selection-start-line="12" selection-start-column="46" selection-end-line="12" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -178,8 +183,8 @@
         <option value="$PROJECT_DIR$/lib/build.dependencies" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/Database.kt" />
-        <option value="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt" />
+        <option value="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" />
       </list>
     </option>
   </component>
@@ -711,7 +716,14 @@
       <option name="project" value="LOCAL" />
       <updated>1498227323684</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="log transactions to a transaction log...">
+      <created>1498227527551</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1498227527551</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1263,10 +1275,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/build/jooq-3.9.2-sources.jar!/org/jooq/Sequence.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="93" column="13" lean-forward="false" selection-start-line="93" selection-start-column="13" selection-end-line="93" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#2139#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="118" column="95" lean-forward="false" selection-start-line="118" selection-start-column="95" selection-end-line="118" selection-end-column="95" />
+          <folding>
+            <element signature="e#32#317#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Database.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="11" column="8" lean-forward="false" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
+        <state relative-caret-position="-60">
+          <caret line="12" column="46" lean-forward="false" selection-start-line="12" selection-start-column="46" selection-end-line="12" selection-end-column="46" />
           <folding />
         </state>
       </provider>
@@ -1274,27 +1307,9 @@
     <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
-          <caret line="68" column="89" lean-forward="false" selection-start-line="68" selection-start-column="89" selection-end-line="68" selection-end-column="89" />
+          <caret line="69" column="28" lean-forward="false" selection-start-line="69" selection-start-column="28" selection-end-line="69" selection-end-column="28" />
           <folding>
-            <element signature="e#32#513#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/build/jooq-3.9.2-sources.jar!/org/jooq/Sequence.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="93" column="13" lean-forward="false" selection-start-line="93" selection-start-column="13" selection-end-line="93" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="112" column="9" lean-forward="false" selection-start-line="112" selection-start-column="9" selection-end-line="112" selection-end-column="9" />
-          <folding>
-            <element signature="e#32#317#0" expanded="true" />
+            <element signature="e#32#568#0" expanded="true" />
           </folding>
         </state>
       </provider>

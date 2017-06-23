@@ -10,6 +10,7 @@ import java.util.*
 object Database {
     val transactionLog = table("transactionLog")!!
     val transactionId = field("tranId", BigInteger::class.java)!!
+    val transactionType = field("type", String::class.java)!!
     val payload = field("payload", String::class.java)!!
 
     val processedEvent = table("processedEvent")!!
@@ -35,6 +36,7 @@ object Database {
         dataContext
             .createTableIfNotExists(transactionLog)
             .column(transactionId)
+            .column(transactionType)
             .column(manuscriptId)
             .column(payload)
             .constraint(
