@@ -1,5 +1,6 @@
 package com.springernature.e2e
 
+import com.google.gson.Gson
 import org.http4k.core.Body
 import org.http4k.core.HttpHandler
 import org.http4k.core.Response
@@ -7,10 +8,27 @@ import org.http4k.core.Status
 import org.http4k.lens.*
 import org.http4k.routing.path
 import org.jooq.DSLContext
+import org.jooq.impl.DSL.`val`
 import java.util.*
+
+interface Jsonable {
+    fun toJson(): String {
+        return Gson().toJson(this)
+    }
+}
+
+data class CreateManuscript(val originalContent: String) : Jsonable
+data class SetMarkupFragment(val id: ManuscriptId, val fragmentName: String, val fragment: MarkUpFragment) : Jsonable
+
+private fun logEvent(dataContext: DSLContext, id: ManuscriptId, event: String) {
+    dataContext.insertInto(Database.transactionLog, Database.transactionId, Database.manuscriptId, Database.payload)
+        .values(Database.transactionIdSequence.nextval(), `val`(id.raw), `val`(event)).execute()
+}
 
 fun createArticle(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.randomUUID())
+
+    logEvent(dataContext, id, CreateManuscript(originalContent).toJson())
 
     dataContext
         .insertInto(Database.manuscript, Database.manuscriptId, Database.content)
@@ -57,7 +75,10 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
             title = updateMarkUpFragment(title, approved ?: false, manuscript.title, selection)
         )
         println("newManuscript = ${newManuscript}")
-        Database.saveManuscriptToDb(dataContext, updateContentFrom(newManuscript))
+        if (newManuscript != manuscript) {
+            logEvent(dataContext, id, SetMarkupFragment(id, "title", newManuscript.title).toJson())
+            Database.saveManuscriptToDb(dataContext, updateContentFrom(newManuscript))
+        }
     }
     val formSuffix = when (action) {
         "next" -> "abstract"
@@ -86,7 +107,10 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
             abstract = updateMarkUpFragment(abstract, approved ?: false, manuscript.abstract, selection)
         )
         println("newManuscript = ${newManuscript}")
-        Database.saveManuscriptToDb(dataContext, updateContentFrom(newManuscript))
+        if (newManuscript != manuscript) {
+            logEvent(dataContext, id, SetMarkupFragment(id, "abstract", newManuscript.abstract).toJson())
+            Database.saveManuscriptToDb(dataContext, updateContentFrom(newManuscript))
+        }
     }
     val formSuffix = when (action) {
         "previous" -> "title"
@@ -105,9 +129,9 @@ fun updateContentFrom(manuscript: Manuscript): Manuscript {
 
     val nodes = doc.documentElement.childNodes
     var index = 0
-    while(index < nodes.length) {
+    while (index < nodes.length) {
         val node = nodes.item(index)
-        if(node.hasAttributes()) {
+        if (node.hasAttributes()) {
             val nodeIndex = Integer.parseInt(node.attributes.getNamedItem("data-index").nodeValue)
             when (nodeIndex) {
                 in titleRange -> doc.documentElement.removeChild(node)

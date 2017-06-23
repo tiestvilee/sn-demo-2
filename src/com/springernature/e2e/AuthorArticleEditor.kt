@@ -1,5 +1,9 @@
 package com.springernature.e2e
 
+import com.springernature.e2e.Database.manuscriptId
+import com.springernature.e2e.Database.payload
+import com.springernature.e2e.Database.transactionId
+import com.springernature.e2e.Database.transactionLog
 import com.springernature.kachtml.*
 import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
@@ -53,6 +57,22 @@ val originalContent = """
 <p data-index="39">qRT-PCR</p>
 <p data-index="40">After DNase treatment, total RNA (2 μg) was used to produce cDNA with the Omniscript RT Kit (Qiagen, Valencia, CA, USA). The cDNA was used as the template for qRT-PCR using FastStart Universal SYBR Green Master (Roche, Indianapolis, IN, USA). The reaction was run on the LightCycler® 96 System (Roche, Pleasanton, CA, USA). The relative expression level of a gene was quantified using the expression value of cotton GhUBQ10 as an internal control using the primers (Additional file 10: Table S9).</p>
 """
+
+fun logFor(dataContext: DSLContext): HttpHandler = { request ->
+    val id = ManuscriptId(UUID.fromString(request.path("id")!!))
+
+    val body = dataContext.select(transactionId, payload).from(transactionLog).where(manuscriptId.eq(id.raw))
+        .fetchMany().fold("",
+        { acc, result ->
+            result.fold(acc,
+                {acc2, record ->
+                    acc2 + "==========> " + record.getValue(0) + "\n" + record.getValue(1) + "\n"
+                })
+        })
+
+    Response(Status.OK).header("Content-Type", "text/plain; charset=utf-8")
+        .body(body)
+}
 
 fun asXml(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))

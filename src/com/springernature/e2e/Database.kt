@@ -3,12 +3,19 @@ package com.springernature.e2e
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL.*
+import java.math.BigInteger
 import java.sql.Connection
 import java.util.*
 
 object Database {
+    val transactionLog = table("transactionLog")!!
+    val transactionId = field("tranId", BigInteger::class.java)!!
+    val payload = field("payload", String::class.java)!!
+
+    val processedEvent = table("processedEvent")!!
+
     val manuscript = table("manuscript")!!
-    val manuscriptId = field("id", UUID::class.java)!!
+    val manuscriptId = field("manId", UUID::class.java)!!
     val title = field("title", String::class.java)!!
     val titleApproved = field("title_approved", Boolean::class.java)!!
     val titleStart = field("title_start", Integer::class.java)!!
@@ -20,8 +27,31 @@ object Database {
     val content = field("content", String::class.java)!!
     val contentApproved = field("content_approved", Boolean::class.java)!!
 
+    val transactionIdSequence = sequence("transactionid_seq")
+
     fun createDbTables(conn: Connection) {
         val dataContext = using(conn, SQLDialect.H2)
+
+        dataContext
+            .createTableIfNotExists(transactionLog)
+            .column(transactionId)
+            .column(manuscriptId)
+            .column(payload)
+            .constraint(
+                constraint("transactionlog_pk").primaryKey(transactionId)
+            )
+            .execute()
+
+        dataContext.createSequenceIfNotExists(transactionIdSequence)
+            .execute()
+
+        dataContext
+            .createTableIfNotExists(processedEvent)
+            .column(transactionId)
+            .execute()
+
+        dataContext.insertInto(processedEvent, transactionId).values(BigInteger.valueOf(-1))
+            .execute()
 
         dataContext
             .createTableIfNotExists(manuscript)
@@ -45,7 +75,7 @@ object Database {
                 Database.title, Database.titleApproved, Database.titleStart, Database.titleEnd,
                 Database.abstract, Database.abstractApproved, Database.abstractStart, Database.abstractEnd,
                 Database.content, Database.contentApproved
-                )
+            )
             .from(Database.manuscript)
             .where(Database.manuscriptId.eq(id.raw)).fetchOne()
         return record

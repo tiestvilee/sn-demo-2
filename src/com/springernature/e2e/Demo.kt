@@ -36,12 +36,17 @@ fun main(args: Array<String>) {
         .then(
             dbSession(conn, { dataContext ->
                 cors(routes(
+                    "/article/{id:.+}/log" to GET bind logFor(dataContext),
                     "/article/{id:.+}/asXml" to GET bind asXml(dataContext),
                     "/article/{id:.+}/asPdf" to GET bind asPdf(dataContext),
                     "/article/{id:.+}/title" to GET bind updateTitleForm(dataContext),
                     "/article/{id:.+}/title" to POST bind updateTitle(dataContext),
                     "/article/{id:.+}/abstract" to GET bind updateAbstractForm(dataContext),
                     "/article/{id:.+}/abstract" to POST bind updateAbstract(dataContext),
+//                    "/article/{id:.+}/author/selection" to POST bind selectAuthors(dataContext),
+//                    "/article/{id:.+}/author/add" to POST bind selectAuthors(dataContext),
+//                    "/article/{id:.+}/author/{author:.+}" to POST bind selectAuthors(dataContext),
+//                    "/article/{id:.+}/author" to GET bind updateAuthorsForm(dataContext),
                     "/article/{id:.+}" to GET bind redirectToTitle(),
                     "/article" to GET bind createArticleForm(),
                     "/article" to POST bind createArticle(dataContext),
