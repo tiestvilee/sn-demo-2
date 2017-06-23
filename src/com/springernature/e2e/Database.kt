@@ -1,22 +1,37 @@
 package com.springernature.e2e
 
+import com.springernature.e2e.ProcessedEvent.processedEvent
 import org.jooq.DSLContext
+import org.jooq.Record
 import org.jooq.SQLDialect
+import org.jooq.Table
 import org.jooq.impl.DSL.*
 import java.math.BigInteger
 import java.sql.Connection
 import java.util.*
 
-object Database {
+object TransactionLog {
     val transactionLog = table("transactionLog")!!
-    val transactionId = field("tranId", BigInteger::class.java)!!
-    val transactionType = field("type", String::class.java)!!
-    val payload = field("payload", String::class.java)!!
+    val transactionId = field(transactionLog.fieldNamed("tranId"), BigInteger::class.java)!!
+    val transactionType = field(transactionLog.fieldNamed("type"), String::class.java)!!
+    val payload = field(transactionLog.fieldNamed("payload"), String::class.java)!!
+    val manuscriptId = field(transactionLog.fieldNamed("manId"), UUID::class.java)!!
+}
 
+object ProcessedEvent {
     val processedEvent = table("processedEvent")!!
+    val transactionId = field(processedEvent.fieldNamed("tranId"), BigInteger::class.java)!!
+
+}
+
+@Suppress("unused")
+fun Table<Record>.fieldNamed(fieldName: String) = name(fieldName) // name("public", name, fieldName)
+
+object Database {
+
 
     val manuscript = table("manuscript")!!
-    val manuscriptId = field("manId", UUID::class.java)!!
+    val manuscriptId = field(name("manId"), UUID::class.java)!!
     val title = field("title", String::class.java)!!
     val titleApproved = field("title_approved", Boolean::class.java)!!
     val titleStart = field("title_start", Integer::class.java)!!
@@ -34,13 +49,13 @@ object Database {
         val dataContext = using(conn, SQLDialect.H2)
 
         dataContext
-            .createTableIfNotExists(transactionLog)
-            .column(transactionId)
-            .column(transactionType)
-            .column(manuscriptId)
-            .column(payload)
+            .createTableIfNotExists(TransactionLog.transactionLog)
+            .column(TransactionLog.transactionId)
+            .column(TransactionLog.transactionType)
+            .column(TransactionLog.manuscriptId)
+            .column(TransactionLog.payload)
             .constraint(
-                constraint("transactionlog_pk").primaryKey(transactionId)
+                constraint("transactionlog_pk").primaryKey(TransactionLog.transactionId)
             )
             .execute()
 
@@ -49,10 +64,11 @@ object Database {
 
         dataContext
             .createTableIfNotExists(processedEvent)
-            .column(transactionId)
+            .column(ProcessedEvent.transactionId)
             .execute()
 
-        dataContext.insertInto(processedEvent, transactionId).values(BigInteger.valueOf(-1))
+        dataContext.deleteFrom(processedEvent).execute()
+        dataContext.insertInto(processedEvent, ProcessedEvent.transactionId).values(BigInteger.valueOf(-1))
             .execute()
 
         dataContext
@@ -72,14 +88,18 @@ object Database {
     }
 
     fun retrieveManuscript(dataContext: DSLContext, id: ManuscriptId): Manuscript {
+        return maybeRetrieveManuscript(dataContext, id) ?: throw RuntimeException("not found")
+    }
+
+    fun maybeRetrieveManuscript(dataContext: DSLContext, id: ManuscriptId): Manuscript? {
         val record = dataContext
             .select(
-                Database.title, Database.titleApproved, Database.titleStart, Database.titleEnd,
-                Database.abstract, Database.abstractApproved, Database.abstractStart, Database.abstractEnd,
-                Database.content, Database.contentApproved
+                title, titleApproved, titleStart, titleEnd,
+                abstract, abstractApproved, abstractStart, abstractEnd,
+                content, contentApproved
             )
-            .from(Database.manuscript)
-            .where(Database.manuscriptId.eq(id.raw)).fetchOne()
+            .from(manuscript)
+            .where(manuscriptId.eq(id.raw)).fetchOne()
         return record
             ?.let {
                 val result = Manuscript(
@@ -91,7 +111,7 @@ object Database {
                 println(">>>>>>>>>> result = $result")
                 result
             }
-            ?: throw RuntimeException("not found")
+
     }
 
     private fun intRangeFromDbFields(start: Int?, end: Int?) =

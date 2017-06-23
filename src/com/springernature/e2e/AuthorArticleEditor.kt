@@ -1,10 +1,6 @@
 package com.springernature.e2e
 
 import com.springernature.e2e.Database.manuscriptId
-import com.springernature.e2e.Database.payload
-import com.springernature.e2e.Database.transactionId
-import com.springernature.e2e.Database.transactionLog
-import com.springernature.e2e.Database.transactionType
 import com.springernature.kachtml.*
 import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
@@ -62,7 +58,9 @@ val originalContent = """
 fun logFor(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val body = dataContext.select(transactionId, transactionType, payload).from(transactionLog).where(manuscriptId.eq(id.raw))
+    val body = dataContext.select(TransactionLog.transactionId, TransactionLog.transactionType, TransactionLog.payload)
+        .from(TransactionLog.transactionLog)
+        .where(manuscriptId.eq(id.raw))
         .fetchMany().fold("",
         { acc, result ->
             result.fold(acc,
