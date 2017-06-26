@@ -1,7 +1,6 @@
 package com.springernature.e2e
 
 import com.google.gson.Gson
-import com.springernature.e2e.Database.manuscriptId
 import org.http4k.core.Body
 import org.http4k.core.HttpHandler
 import org.http4k.core.Response
@@ -9,10 +8,6 @@ import org.http4k.core.Status
 import org.http4k.lens.*
 import org.http4k.routing.path
 import org.jooq.DSLContext
-import org.jooq.impl.DSL.`val`
-import org.jooq.impl.DSL.select
-import java.math.BigDecimal
-import java.math.BigInteger
 import java.util.*
 
 interface Jsonable {
@@ -25,89 +20,15 @@ interface TransactionEvent : Jsonable {
 
 }
 
-data class CreateManuscript(val originalContent: String) : TransactionEvent {
-    companion object {
-        fun fromJson(json: String): CreateManuscript {
-            return Gson().fromJson(json, CreateManuscript::class.java)
-        }
-    }
-}
-
-data class SetMarkupFragment(val id: ManuscriptId, val fragmentName: String, val fragment: MarkUpFragment) : TransactionEvent {
-    companion object {
-        fun fromJson(json: String): SetMarkupFragment {
-            return Gson().fromJson(json, SetMarkupFragment::class.java)
-        }
-    }
-}
-
-private fun logEvent(dataContext: DSLContext, id: ManuscriptId, event: TransactionEvent) {
-    dataContext.insertInto(TransactionLog.transactionLog, TransactionLog.transactionId, TransactionLog.transactionType, Database.manuscriptId, TransactionLog.payload)
-        .values(
-            Database.transactionIdSequence.nextval(),
-            `val`(event.javaClass.simpleName),
-            `val`(id.raw),
-            `val`(event.toJson())).execute()
-}
-
 fun createArticle(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.randomUUID())
 
-    logEvent(dataContext, id, CreateManuscript(originalContent))
+    com.springernature.e2e.logEvent(dataContext, id, com.springernature.e2e.CreateManuscript(originalContent))
 
-    processEvents(dataContext)
+    com.springernature.e2e.processEvents(dataContext)
 
     Response(Status.Companion.SEE_OTHER)
         .header("Location", "/article/${id.raw}")
-}
-
-fun processEvents(dataContext: DSLContext) {
-    var biggestTransactionId = BigInteger.valueOf(-1)
-    dataContext
-        .select(manuscriptId, TransactionLog.transactionId, TransactionLog.payload, TransactionLog.transactionType)
-        .from(TransactionLog.transactionLog)
-        .where(
-            TransactionLog.transactionId.gt(select(ProcessedEvent.transactionId).from(ProcessedEvent.processedEvent))
-        )
-        .orderBy(TransactionLog.transactionId)
-        .fetchMany()
-        .forEach({ result ->
-            result.forEach({ record ->
-                val id = ManuscriptId(record[TransactionLog.manuscriptId])
-                when (record[TransactionLog.transactionType]) {
-                    "CreateManuscript" -> {
-                        if (Database.maybeRetrieveManuscript(dataContext, id) == null) {
-                            val event = CreateManuscript.fromJson(record[TransactionLog.payload])
-                            dataContext
-                                .insertInto(Database.manuscript, Database.manuscriptId, Database.content)
-                                .values(id.raw, event.originalContent)
-                                .execute()
-                        }
-                    }
-                    "SetMarkupFragment" -> {
-                        val event = SetMarkupFragment.fromJson(record[TransactionLog.payload])
-                        val manuscript = Database.retrieveManuscript(dataContext, id)
-                        Database.saveManuscriptToDb(
-                            dataContext,
-                            updateContentFrom(event.updateManuscript(manuscript)))
-                    }
-                    else -> throw RuntimeException("Don't understand transaction type: " + record[TransactionLog.transactionType])
-                }
-                @Suppress("CAST_NEVER_SUCCEEDS")
-                val bigInteger: BigInteger = (record.get(TransactionLog.transactionId) as BigDecimal).toBigInteger() // jooq bug?
-                biggestTransactionId = bigInteger
-            })
-        })
-    dataContext.update(ProcessedEvent.processedEvent).set(ProcessedEvent.transactionId, biggestTransactionId)
-}
-
-fun SetMarkupFragment.updateManuscript(manuscript: Manuscript): Manuscript {
-    val newManuscript = when (fragmentName) {
-        "title" -> manuscript.copy(title = fragment)
-        "abstract" -> manuscript.copy(abstract = fragment)
-        else -> throw RuntimeException("Don't understand fragment name: " + fragmentName)
-    }
-    return newManuscript
 }
 
 @Suppress("unused")
@@ -147,8 +68,8 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
         )
         println("newManuscript = ${newManuscript}")
         if (newManuscript != manuscript) {
-            logEvent(dataContext, id, SetMarkupFragment(id, "title", newManuscript.title))
-            processEvents(dataContext)
+            com.springernature.e2e.logEvent(dataContext, id, com.springernature.e2e.SetMarkupFragment(id, "title", newManuscript.title))
+            com.springernature.e2e.processEvents(dataContext)
         }
     }
     val formSuffix = when (action) {
@@ -179,8 +100,8 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
         )
         println("newManuscript = ${newManuscript}")
         if (newManuscript != manuscript) {
-            logEvent(dataContext, id, SetMarkupFragment(id, "abstract", newManuscript.abstract))
-            processEvents(dataContext)
+            com.springernature.e2e.logEvent(dataContext, id, com.springernature.e2e.SetMarkupFragment(id, "abstract", newManuscript.abstract))
+            com.springernature.e2e.processEvents(dataContext)
         }
     }
     val formSuffix = when (action) {
