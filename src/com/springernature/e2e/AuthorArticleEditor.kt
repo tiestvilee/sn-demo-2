@@ -204,16 +204,16 @@ fun createArticleForm(): HttpHandler {
                 div(cl("col-md-4"),
                     div(cl("fluid card"),
                         div(cl("section"), h3("Welcome to Nature Immunology")),
-                        form("method" attr "POST",
+                        form("method" attr "POST", "action" attr "", "enctype" attr "multipart/form-data",
                             fieldset(
                                 legend("Create a new article"),
                                 formRow(label("for" attr "articleType", "Article Type"),
-                                    select("id" attr "articleType",
+                                    select("id" attr "articleType", "name" attr "articleType",
                                         option("review"),
                                         option("obituary")
                                     )),
                                 formRow(label("for" attr "uploadManuscript", "Upload Manuscript"),
-                                    input("type" attr "file", "id" attr "uploadManuscript"),
+                                    input("type" attr "file", "name" attr "uploadManuscript", "id" attr "uploadManuscript"),
                                     label("for" attr "uploadManuscript", cl("button"), "Upload")
                                 ),
                                 formRow(span(), button("Create", "type" attr "submit"))
