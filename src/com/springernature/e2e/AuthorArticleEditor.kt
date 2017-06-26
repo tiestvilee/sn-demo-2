@@ -59,12 +59,12 @@ fun logFor(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val body = dataContext.select(TransactionLog.transactionId, TransactionLog.transactionType, TransactionLog.payload)
-        .from(TransactionLog.transactionLog)
+        .from(TransactionLog.transactionLogTable)
         .where(manuscriptId.eq(id.raw))
         .fetchMany().fold("",
         { acc, result ->
             result.fold(acc,
-                {acc2, record ->
+                { acc2, record ->
                     "$acc2  ==========> ${record.getValue(0)} - ${record.getValue(1)}\n${record.getValue(2)}\n"
                 })
         })
@@ -97,7 +97,7 @@ fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
     val fragment = manuscript.title
-    authorEditPage(manuscript, fragment.state, originalContent.reserve(manuscript.abstract.originalDocumentLocation), typeSet(manuscript), "title",
+    authorEditPage(manuscript, fragment.state, originalContent.reserve(manuscript.title, manuscript), typeSet(manuscript), "title",
         htmlEditor("editable-title", fragment.markUp.raw, fragment.originalDocumentLocation, "title"))
 }
 
@@ -107,22 +107,49 @@ fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
     val fragment = manuscript.abstract
-    authorEditPage(manuscript, fragment.state, originalContent.reserve(manuscript.title.originalDocumentLocation), typeSet(manuscript), "abstract",
+    authorEditPage(manuscript, fragment.state, originalContent.reserve(manuscript.abstract, manuscript), typeSet(manuscript), "abstract",
         htmlEditor("editable-abstract", fragment.markUp.raw, fragment.originalDocumentLocation, "abstract"))
 }
 
-private fun String.reserve(vararg reservationRanges: IntRange?): String =
-    reservationRanges.asList()
+fun updateAuthorsForm(dataContext: DSLContext): HttpHandler = { request ->
+    val id = ManuscriptId(UUID.fromString(request.path("id")!!))
+
+    val manuscript = Database.retrieveManuscript(dataContext, id)
+
+    val authors = manuscript.authors
+    val authorSelection = originalContent.lines().filter({ line ->
+        Regex("data-index=\"([^\"]*)\"").find(line)?.groupValues?.get(1)
+            ?.let { index -> authors.originalDocumentLocation?.contains(Integer.parseInt(index)) }
+            ?: false
+    }
+    ).joinToString()
+    authorEditPage(manuscript, authors.state, originalContent.reserve(manuscript.authors, manuscript), typeSet(manuscript), "authors",
+        selectionDisplayer("readable-authors", authorSelection, authors.originalDocumentLocation, "authors"))
+}
+
+private fun String.reserve(unreservedRange: FragmentOriginalDocumentLocation, manuscript: Manuscript): String {
+    val reservedRange = listOf(manuscript.title.originalDocumentLocation, manuscript.abstract.originalDocumentLocation, manuscript.authors.originalDocumentLocation)
         .filterNotNull()
+        .filter { range -> range != unreservedRange.originalDocumentLocation }
+    return reservedRange
         .fold(this,
             { acc, range ->
                 range.fold(acc,
                     { acc2, index -> acc2.replace("data-index=\"$index\"", "data-index=\"$index\" data-already-used") })
             })
+}
 
 private fun htmlEditor(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String) =
     div(cl("row responsive-margin bordered rounded"),
         div(id(editorId), cl("html-editor with-scrollbars hack-height"), "contenteditable" attr "true", originalContent),
+        input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId),
+        input("type" attr "hidden", "name" attr "selectionStart", "value" attr (originalContentSelection?.first?.toString() ?: "")),
+        input("type" attr "hidden", "name" attr "selectionEnd", "value" attr (originalContentSelection?.last?.toString() ?: ""))
+    )
+
+private fun selectionDisplayer(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String) =
+    div(cl("row responsive-margin bordered rounded"),
+        div(id(editorId), cl("html-editor with-scrollbars hack-height"), "contenteditable" attr "false", originalContent),
         input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId),
         input("type" attr "hidden", "name" attr "selectionStart", "value" attr (originalContentSelection?.first?.toString() ?: "")),
         input("type" attr "hidden", "name" attr "selectionEnd", "value" attr (originalContentSelection?.last?.toString() ?: ""))
@@ -137,18 +164,11 @@ private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState,
         div(cl("col-lg-4 full-screen-height"),
             form("method" attr "POST",
                 div(cl("row"),
-                    select(cl("form-selector"),
-                        "name" attr "formSelector",
-                        option("value" attr "title", manuscript.title.state.asIcon + " Title", if (currentForm == "title") {
-                            attr("selected")
-                        } else {
-                            ""
-                        }),
-                        option("value" attr "abstract", manuscript.abstract.state.asIcon + " Abstract", if (currentForm == "abstract") {
-                            attr("selected")
-                        } else {
-                            ""
-                        })),
+                    select(cl("form-selector"), "name" attr "formSelector",
+                        fragmentOption(currentForm, "title", "Title", manuscript.title),
+                        fragmentOption(currentForm, "abstract", "Abstract", manuscript.abstract),
+                        fragmentOption(currentForm, "authors", "Authors", manuscript.authors)
+                    ),
                     button(id("formSelectorButton"), cl("hidden"), "name" attr "action", "value" attr "selected", "Go")),
                 *formRows,
                 div(cl("row"),
@@ -171,6 +191,15 @@ private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState,
             typesetManuscript
         )
     ))
+}
+
+private fun fragmentOption(currentForm: String, name: String, title: String, fragment: FragmentWithState): Option {
+    return option("value" attr name, fragment.state.asIcon + " " + title,
+        if (currentForm == name) {
+            attr("selected")
+        } else {
+            ""
+        })
 }
 
 private fun approvedCheckbox(fragmentState: FragmentState): List<KTag> {
@@ -235,7 +264,7 @@ val styles = """
     height:calc(100vh - 140px);
 }
 .hack-height {
-    height:calc(100vh - 300px);
+    max-height:calc(100vh - 320px);
 }
 .with-scrollbars {
     overflow-y:scroll;
@@ -413,7 +442,7 @@ private fun page(title: MarkUp, content: KTag): KTag {
             body(
                 header(cl("sticky row"),
                     div(cl("col-sm col-md-10, col-md-offset-1"),
-                        a("href" attr "/editor/manuscript", "role" attr "button", "Manuscripts"),
+                        a("href" attr "/editor/manuscriptTable", "role" attr "button", "Manuscripts"),
                         a("href" attr "asXml", "role" attr "button", "As XML"),
                         a("href" attr "asPdf", "role" attr "button", "As PDF")
                     )),

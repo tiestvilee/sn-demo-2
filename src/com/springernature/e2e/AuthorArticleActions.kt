@@ -50,7 +50,7 @@ val selectionStartParam = FormField.string().required("selectionStart")
 val selectionEndParam = FormField.string().required("selectionEnd")
 val formSelector = FormField.string().required("formSelector")
 
-val forms = listOf("title", "abstract")
+val forms = listOf("title", "abstract", "authors")
 
 fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
@@ -68,7 +68,7 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
         val newManuscript = manuscript.copy(
             title = updateMarkUpFragment(title, approved ?: false, manuscript.title, selection)
         )
-        updateFragment(newManuscript, manuscript, dataContext, id, "title", newManuscript.title)
+        updateMarkupFragment(newManuscript, manuscript, dataContext, "title", newManuscript.title)
     }
 
     Response(Status.SEE_OTHER)
@@ -91,24 +91,48 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
         val newManuscript = manuscript.copy(
             abstract = updateMarkUpFragment(abstract, approved ?: false, manuscript.abstract, selection)
         )
-        updateFragment(newManuscript, manuscript, dataContext, id, "abstract", newManuscript.abstract)
+        updateMarkupFragment(newManuscript, manuscript, dataContext, "abstract", newManuscript.abstract)
     }
 
     Response(Status.SEE_OTHER)
         .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "abstract")}")
 }
 
+fun updateAuthors(dataContext: DSLContext): HttpHandler = { request ->
+    val id = ManuscriptId(UUID.fromString(request.path("id")!!))
+    val manuscript = Database.retrieveManuscript(dataContext, id)
+
+    val webForm = Body.webForm(FormValidator.Strict, actionParam, formSelector, approvedParam, selectionStartParam, selectionEndParam).toLens()(request)
+    val action = actionParam(webForm)
+    val selector = formSelector(webForm)
+
+    val approved = approvedParam(webForm)
+    val selection = selectionFrom(webForm)
+
+    if (action != "revert") {
+        val authors = Authors(originalDocumentLocation = selection, approved = approved ?: false)
+        println("updating authors = ${authors}")
+        if (authors != manuscript.authors) {
+            logEvent(dataContext, manuscript.id, SetAuthorsFragment(authors))
+            processEvents(dataContext)
+        }
+    }
+
+    Response(Status.SEE_OTHER)
+        .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "authors")}")
+}
+
 private fun formSuffix(action: String, selector: String, currentForm: String): String =
     when (action) {
-        "next" -> forms[minOf(forms.indexOf(currentForm) + 1, forms.size)]
+        "next" -> forms[minOf(forms.indexOf(currentForm) + 1, forms.size - 1)]
         "previous" -> forms[maxOf(forms.indexOf(currentForm) - 1, 0)]
         "selected" -> selector
         else -> currentForm
     }
 
-private fun updateFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: DSLContext, id: ManuscriptId, fragmentName: String, fragment: MarkUpFragment) {
+private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: DSLContext, fragmentName: String, fragment: MarkUpFragment) {
     if (newManuscript != manuscript) {
-        logEvent(dataContext, id, SetMarkupFragment(id, fragmentName, fragment))
+        logEvent(dataContext, manuscript.id, SetMarkupFragment(fragmentName, fragment))
         processEvents(dataContext)
     }
 }
@@ -117,6 +141,7 @@ fun updateContentFrom(manuscript: Manuscript): Manuscript {
     val doc = Xml.document("<root>$originalContent</root>")
     val titleRange = manuscript.title.originalDocumentLocation ?: (-1..-1)
     val abstractRange = manuscript.abstract.originalDocumentLocation ?: (-1..-1)
+    val authorsRange = manuscript.authors.originalDocumentLocation ?: (-1..-1)
 
     val nodes = doc.documentElement.childNodes
     var index = 0
@@ -127,6 +152,7 @@ fun updateContentFrom(manuscript: Manuscript): Manuscript {
             when (nodeIndex) {
                 in titleRange -> doc.documentElement.removeChild(node)
                 in abstractRange -> doc.documentElement.removeChild(node)
+                in authorsRange -> doc.documentElement.removeChild(node)
                 else -> {
                     index++
                 }

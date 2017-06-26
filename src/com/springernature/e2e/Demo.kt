@@ -1,8 +1,9 @@
 package com.springernature.e2e
 
-import org.http4k.core.*
+import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
+import org.http4k.core.then
 import org.http4k.filter.DebuggingFilters
 import org.http4k.routing.bind
 import org.http4k.routing.routes
@@ -46,7 +47,8 @@ fun main(args: Array<String>) {
 //                    "/article/{id:.+}/author/selection" to POST bind selectAuthors(dataContext),
 //                    "/article/{id:.+}/author/add" to POST bind selectAuthors(dataContext),
 //                    "/article/{id:.+}/author/{author:.+}" to POST bind selectAuthors(dataContext),
-//                    "/article/{id:.+}/author" to GET bind updateAuthorsForm(dataContext),
+                    "/article/{id:.+}/authors" to POST bind updateAuthors(dataContext),
+                    "/article/{id:.+}/authors" to GET bind updateAuthorsForm(dataContext),
                     "/article/{id:.+}" to GET bind redirectToTitle(),
                     "/article" to GET bind createArticleForm(),
                     "/article" to POST bind createArticle(dataContext),

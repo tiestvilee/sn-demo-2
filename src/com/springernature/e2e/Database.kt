@@ -1,6 +1,6 @@
 package com.springernature.e2e
 
-import com.springernature.e2e.ProcessedEvent.processedEvent
+import com.springernature.e2e.ProcessedEvent.processedEventTable
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.SQLDialect
@@ -11,16 +11,16 @@ import java.sql.Connection
 import java.util.*
 
 object TransactionLog {
-    val transactionLog = table("transactionLog")!!
-    val transactionId = field(transactionLog.fieldNamed("tranId"), BigInteger::class.java)!!
-    val transactionType = field(transactionLog.fieldNamed("type"), String::class.java)!!
-    val payload = field(transactionLog.fieldNamed("payload"), String::class.java)!!
-    val manuscriptId = field(transactionLog.fieldNamed("manId"), UUID::class.java)!!
+    val transactionLogTable = table("transactionLog")!!
+    val transactionId = field(transactionLogTable.fieldNamed("tranId"), BigInteger::class.java)!!
+    val transactionType = field(transactionLogTable.fieldNamed("type"), String::class.java)!!
+    val payload = field(transactionLogTable.fieldNamed("payload"), String::class.java)!!
+    val manuscriptId = field(transactionLogTable.fieldNamed("manId"), UUID::class.java)!!
 }
 
 object ProcessedEvent {
-    val processedEvent = table("processedEvent")!!
-    val transactionId = field(processedEvent.fieldNamed("tranId"), BigInteger::class.java)!!
+    val processedEventTable = table("processedEvent")!!
+    val transactionId = field(processedEventTable.fieldNamed("tranId"), BigInteger::class.java)!!
 
 }
 
@@ -30,7 +30,7 @@ fun Table<Record>.fieldNamed(fieldName: String) = name(fieldName) // name("publi
 object Database {
 
 
-    val manuscript = table("manuscript")!!
+    val manuscriptTable = table("manuscript")!!
     val manuscriptId = field(name("manId"), UUID::class.java)!!
     val payload = field("payload", String::class.java)!!
 
@@ -40,7 +40,7 @@ object Database {
         val dataContext = using(conn, SQLDialect.H2)
 
         dataContext
-            .createTableIfNotExists(TransactionLog.transactionLog)
+            .createTableIfNotExists(TransactionLog.transactionLogTable)
             .column(TransactionLog.transactionId)
             .column(TransactionLog.transactionType)
             .column(TransactionLog.manuscriptId)
@@ -54,16 +54,16 @@ object Database {
             .execute()
 
         dataContext
-            .createTableIfNotExists(processedEvent)
+            .createTableIfNotExists(processedEventTable)
             .column(ProcessedEvent.transactionId)
             .execute()
 
-        dataContext.deleteFrom(processedEvent).execute()
-        dataContext.insertInto(processedEvent, ProcessedEvent.transactionId).values(BigInteger.valueOf(-1))
+        dataContext.deleteFrom(processedEventTable).execute()
+        dataContext.insertInto(processedEventTable, ProcessedEvent.transactionId).values(BigInteger.valueOf(-1))
             .execute()
 
         dataContext
-            .createTableIfNotExists(manuscript)
+            .createTableIfNotExists(manuscriptTable)
             .column(manuscriptId)
             .column(payload)
             .execute()
@@ -76,13 +76,11 @@ object Database {
     fun maybeRetrieveManuscript(dataContext: DSLContext, id: ManuscriptId): Manuscript? {
         val record = dataContext
             .select(payload)
-            .from(manuscript)
+            .from(manuscriptTable)
             .where(manuscriptId.eq(id.raw)).fetchOne()
         return record
             ?.let {
-                val result = Manuscript.fromJson(it.value1())
-                println(">>>>>>>>>> result = $result")
-                result
+                Manuscript.fromJson(it.value1())
             }
 
     }
@@ -91,7 +89,7 @@ object Database {
         if (start == null || end == null) null else IntRange(start, end)
 
     fun saveManuscriptToDb(dataContext: DSLContext, manuscript: Manuscript) {
-        dataContext.update(Database.manuscript)
+        dataContext.update(Database.manuscriptTable)
             .set(Database.payload, manuscript.toJson())
             .where(Database.manuscriptId.eq(manuscript.id.raw)).execute()
     }
