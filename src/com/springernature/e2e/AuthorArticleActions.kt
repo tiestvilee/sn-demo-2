@@ -23,9 +23,9 @@ interface TransactionEvent : Jsonable {
 fun createArticle(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.randomUUID())
 
-    com.springernature.e2e.logEvent(dataContext, id, com.springernature.e2e.CreateManuscript(originalContent))
+    logEvent(dataContext, id, CreateManuscript(originalContent))
 
-    com.springernature.e2e.processEvents(dataContext)
+    processEvents(dataContext)
 
     Response(Status.Companion.SEE_OTHER)
         .header("Location", "/article/${id.raw}")
@@ -50,6 +50,8 @@ val selectionStartParam = FormField.string().required("selectionStart")
 val selectionEndParam = FormField.string().required("selectionEnd")
 val formSelector = FormField.string().required("formSelector")
 
+val forms = listOf("title", "abstract")
+
 fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
@@ -66,20 +68,11 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
         val newManuscript = manuscript.copy(
             title = updateMarkUpFragment(title, approved ?: false, manuscript.title, selection)
         )
-        println("newManuscript = ${newManuscript}")
-        if (newManuscript != manuscript) {
-            com.springernature.e2e.logEvent(dataContext, id, com.springernature.e2e.SetMarkupFragment(id, "title", newManuscript.title))
-            com.springernature.e2e.processEvents(dataContext)
-        }
-    }
-    val formSuffix = when (action) {
-        "next" -> "abstract"
-        "selected" -> selector
-        else -> "title"
+        updateFragment(newManuscript, manuscript, dataContext, id, "title", newManuscript.title)
     }
 
     Response(Status.SEE_OTHER)
-        .header("Location", "/article/${id.raw}/$formSuffix")
+        .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "title")}")
 }
 
 fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
@@ -98,20 +91,26 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
         val newManuscript = manuscript.copy(
             abstract = updateMarkUpFragment(abstract, approved ?: false, manuscript.abstract, selection)
         )
-        println("newManuscript = ${newManuscript}")
-        if (newManuscript != manuscript) {
-            com.springernature.e2e.logEvent(dataContext, id, com.springernature.e2e.SetMarkupFragment(id, "abstract", newManuscript.abstract))
-            com.springernature.e2e.processEvents(dataContext)
-        }
-    }
-    val formSuffix = when (action) {
-        "previous" -> "title"
-        "selected" -> selector
-        else -> "abstract"
+        updateFragment(newManuscript, manuscript, dataContext, id, "abstract", newManuscript.abstract)
     }
 
     Response(Status.SEE_OTHER)
-        .header("Location", "/article/${id.raw}/$formSuffix")
+        .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "abstract")}")
+}
+
+private fun formSuffix(action: String, selector: String, currentForm: String): String =
+    when (action) {
+        "next" -> forms[minOf(forms.indexOf(currentForm) + 1, forms.size)]
+        "previous" -> forms[maxOf(forms.indexOf(currentForm) - 1, 0)]
+        "selected" -> selector
+        else -> currentForm
+    }
+
+private fun updateFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: DSLContext, id: ManuscriptId, fragmentName: String, fragment: MarkUpFragment) {
+    if (newManuscript != manuscript) {
+        logEvent(dataContext, id, SetMarkupFragment(id, fragmentName, fragment))
+        processEvents(dataContext)
+    }
 }
 
 fun updateContentFrom(manuscript: Manuscript): Manuscript {
