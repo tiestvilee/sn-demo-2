@@ -11,8 +11,10 @@ import com.springernature.e2e.TransactionLog.payload
 import com.springernature.e2e.TransactionLog.transactionId
 import com.springernature.e2e.TransactionLog.transactionLogTable
 import com.springernature.e2e.TransactionLog.transactionType
+import org.jooq.DSLContext
 import org.jooq.impl.DSL.`val`
 import org.jooq.impl.DSL.select
+import org.neo4j.graphdb.GraphDatabaseService
 
 data class CreateManuscript(val originalContent: String) : TransactionEvent {
     companion object {
@@ -47,7 +49,7 @@ fun logEvent(dataContext: org.jooq.DSLContext, id: ManuscriptId, event: Transact
             `val`(event.toJson())).execute()
 }
 
-fun processEvents(dataContext: org.jooq.DSLContext) {
+fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService) {
     var biggestTransactionId = java.math.BigInteger.valueOf(-1)
     dataContext
         .select(manuscriptId, transactionId, payload, transactionType)
@@ -69,6 +71,8 @@ fun processEvents(dataContext: org.jooq.DSLContext) {
                                 .insertInto(manuscriptTable, Database.manuscriptId, Database.payload)
                                 .values(id.raw, manuscript.toJson())
                                 .execute()
+                            manuscript.toNode(graphDbInTransaction)
+
                         }
                     }
                     "SetMarkupFragment" -> {

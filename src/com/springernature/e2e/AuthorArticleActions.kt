@@ -8,6 +8,7 @@ import org.http4k.core.Status
 import org.http4k.lens.*
 import org.http4k.routing.path
 import org.jooq.DSLContext
+import org.neo4j.graphdb.GraphDatabaseService
 import java.util.*
 
 interface Jsonable {
@@ -20,12 +21,12 @@ interface TransactionEvent : Jsonable {
 
 }
 
-fun createArticle(dataContext: DSLContext): HttpHandler = { request ->
+fun createArticle(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.randomUUID())
 
     logEvent(dataContext, id, CreateManuscript(originalContent))
 
-    processEvents(dataContext)
+    processEvents(dataContext, graphDbInTransaction)
 
     Response(Status.Companion.SEE_OTHER)
         .header("Location", "/article/${id.raw}")
@@ -52,7 +53,7 @@ val formSelector = FormField.string().required("formSelector")
 
 val forms = listOf("title", "abstract", "authors")
 
-fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
+fun updateTitle(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -68,14 +69,14 @@ fun updateTitle(dataContext: DSLContext): HttpHandler = { request ->
         val newManuscript = manuscript.copy(
             title = updateMarkUpFragment(title, approved ?: false, manuscript.title, selection)
         )
-        updateMarkupFragment(newManuscript, manuscript, dataContext, "title", newManuscript.title)
+        updateMarkupFragment(newManuscript, manuscript, dataContext, "title", newManuscript.title, graphDbInTransaction)
     }
 
     Response(Status.SEE_OTHER)
         .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "title")}")
 }
 
-fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
+fun updateAbstract(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -91,14 +92,14 @@ fun updateAbstract(dataContext: DSLContext): HttpHandler = { request ->
         val newManuscript = manuscript.copy(
             abstract = updateMarkUpFragment(abstract, approved ?: false, manuscript.abstract, selection)
         )
-        updateMarkupFragment(newManuscript, manuscript, dataContext, "abstract", newManuscript.abstract)
+        updateMarkupFragment(newManuscript, manuscript, dataContext, "abstract", newManuscript.abstract, graphDbInTransaction)
     }
 
     Response(Status.SEE_OTHER)
         .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "abstract")}")
 }
 
-fun updateAuthors(dataContext: DSLContext): HttpHandler = { request ->
+fun updateAuthors(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
@@ -114,7 +115,7 @@ fun updateAuthors(dataContext: DSLContext): HttpHandler = { request ->
         println("updating authors = ${authors}")
         if (authors != manuscript.authors) {
             logEvent(dataContext, manuscript.id, SetAuthorsFragment(authors))
-            processEvents(dataContext)
+            processEvents(dataContext, graphDbInTransaction)
         }
     }
 
@@ -130,10 +131,10 @@ private fun formSuffix(action: String, selector: String, currentForm: String): S
         else -> currentForm
     }
 
-private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: DSLContext, fragmentName: String, fragment: MarkUpFragment) {
+private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: DSLContext, fragmentName: String, fragment: MarkUpFragment, graphDbInTransaction: GraphDatabaseService) {
     if (newManuscript != manuscript) {
         logEvent(dataContext, manuscript.id, SetMarkupFragment(fragmentName, fragment))
-        processEvents(dataContext)
+        processEvents(dataContext, graphDbInTransaction)
     }
 }
 

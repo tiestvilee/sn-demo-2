@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2c8d7ee3-6590-40f0-b606-8e4aae1faa1f" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,31 +22,11 @@
       <file leaf-file-name="Demo.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="436">
-              <caret line="50" column="71" lean-forward="true" selection-start-line="50" selection-start-column="71" selection-end-line="50" selection-end-column="71" />
+            <state relative-caret-position="-82">
+              <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
               <folding>
-                <element signature="e#32#473#0" expanded="true" />
+                <element signature="e#32#648#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Jetty.kt" pinned="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/lib/build/http4k-server-jetty-2.9.0-sources.jar!/org/http4k/server/Jetty.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="15" column="47" lean-forward="false" selection-start-line="15" selection-start-column="47" selection-end-line="15" selection-end-column="47" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="servlet.kt" pinned="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/lib/build/http4k-core-2.9.0-sources.jar!/org/http4k/servlet/servlet.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="33" column="25" lean-forward="false" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -54,10 +34,10 @@
       <file leaf-file-name="AuthorArticleActions.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="393">
-              <caret line="121" column="87" lean-forward="false" selection-start-line="121" selection-start-column="87" selection-end-line="121" selection-end-column="87" />
+            <state relative-caret-position="356">
+              <caret line="136" column="18" lean-forward="false" selection-start-line="136" selection-start-column="18" selection-end-line="136" selection-end-column="18" />
               <folding>
-                <element signature="e#32#286#0" expanded="true" />
+                <element signature="e#32#332#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -66,11 +46,9 @@
       <file leaf-file-name="ManuscriptEvents.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="38" column="1" lean-forward="true" selection-start-line="38" selection-start-column="1" selection-end-line="38" selection-end-column="1" />
-              <folding>
-                <element signature="e#32#707#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="411">
+              <caret line="73" column="43" lean-forward="false" selection-start-line="73" selection-start-column="43" selection-end-line="73" selection-end-column="43" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -95,11 +73,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AuthorArticleEditor.kt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="AuthorArticleEditor.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="266" column="30" lean-forward="false" selection-start-line="266" selection-start-column="30" selection-end-line="266" selection-end-column="30" />
+            <state relative-caret-position="645">
+              <caret line="157" column="20" lean-forward="false" selection-start-line="157" selection-start-column="20" selection-end-line="157" selection-end-column="20" />
               <folding>
                 <element signature="e#32#359#0" expanded="true" />
               </folding>
@@ -107,11 +85,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Database.kt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="build.dependencies" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/build.dependencies">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="53" lean-forward="false" selection-start-line="10" selection-start-column="53" selection-end-line="10" selection-end-column="53" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Database.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Database.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="214">
-              <caret line="90" column="8" lean-forward="false" selection-start-line="90" selection-start-column="8" selection-end-line="90" selection-end-column="8" />
+            <state relative-caret-position="158">
+              <caret line="33" column="28" lean-forward="false" selection-start-line="33" selection-start-column="28" selection-end-line="33" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -120,10 +108,10 @@
       <file leaf-file-name="Domain.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+            <state relative-caret-position="233">
+              <caret line="41" column="19" lean-forward="false" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
               <folding>
-                <element signature="e#32#78#0" expanded="true" />
+                <element signature="e#32#154#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -178,23 +166,42 @@
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/Xml.kt" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/Pdf.kt" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/StreamingTest.kt" />
-        <option value="$PROJECT_DIR$/lib/build.dependencies" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/multipartForm.kt" />
         <option value="$APPLICATION_CONFIG_DIR$/idea.vmoptions" />
-        <option value="$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt" />
-        <option value="$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt" />
-        <option value="$PROJECT_DIR$/src/com/springernature/e2e/Database.kt" />
+        <option value="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" />
+        <option value="$PROJECT_DIR$/lib/build.dependencies" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt" />
-        <option value="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" />
+        <option value="$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt" />
+        <option value="$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt" />
+        <option value="$PROJECT_DIR$/src/com/springernature/e2e/Database.kt" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="4" />
     <option name="y" value="23" />
-    <option name="width" value="2044" />
-    <option name="height" value="1129" />
+    <option name="width" value="1436" />
+    <option name="height" value="877" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Kotlin</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>Java</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -212,9 +219,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -305,13 +309,16 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Global Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="project.kotlinCompiler" />
   </component>
   <component name="RecentsManager">
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
@@ -774,7 +781,21 @@
       <option name="project" value="LOCAL" />
       <updated>1498486312806</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="add in author region selection">
+      <created>1498486797132</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1498486797132</updated>
+    </task>
+    <task id="LOCAL-00026" summary="introduce neo4j as a 'read optimised store', alongside H2">
+      <created>1498751148968</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1498751148968</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TodoView">
@@ -787,21 +808,19 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="4" y="23" width="2044" height="1129" extended-state="6" />
-    <editor active="true" />
+    <frame x="4" y="23" width="1436" height="877" extended-state="6" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2487946" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32866243" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Buck" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299363" sideWeight="0.5028694" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297975" sideWeight="0.49713057" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32866243" sideWeight="0.49713057" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299363" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18531469" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297975" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2733142" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -812,6 +831,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297975" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -849,7 +869,8 @@
     <MESSAGE value="use JSON payload instead of database fields..." />
     <MESSAGE value="mucking around" />
     <MESSAGE value="add in author region selection" />
-    <option name="LAST_COMMIT_MESSAGE" value="add in author region selection" />
+    <MESSAGE value="introduce neo4j as a 'read optimised store', alongside H2" />
+    <option name="LAST_COMMIT_MESSAGE" value="introduce neo4j as a 'read optimised store', alongside H2" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -871,20 +892,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$PROJECT_DIR$/lib/build/okhttp-3.8.0-sources.jar!/okhttp3/OkHttpClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2324">
-          <caret line="221" column="9" lean-forward="false" selection-start-line="221" selection-start-column="9" selection-end-line="221" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/src.zip!/java/nio/ByteBuffer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="131">
-          <caret line="262" column="16" lean-forward="false" selection-start-line="262" selection-start-column="16" selection-end-line="262" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/src.zip!/java/nio/Buffer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2364">
@@ -970,14 +977,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
           <caret line="55" column="46" lean-forward="false" selection-start-line="55" selection-start-column="46" selection-end-line="55" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/build.dependencies">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="7" lean-forward="false" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -993,7 +992,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-5">
           <caret line="1686" column="40" lean-forward="false" selection-start-line="1686" selection-start-column="40" selection-end-line="1686" selection-end-column="40" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1008,7 +1006,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
           <caret line="203" column="8" lean-forward="false" selection-start-line="203" selection-start-column="8" selection-end-line="203" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1023,7 +1020,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
           <caret line="74" column="17" lean-forward="false" selection-start-line="74" selection-start-column="17" selection-end-line="74" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1125,61 +1121,83 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt">
+    <entry file="jar://$PROJECT_DIR$/lib/build/neo4j-graphdb-api-3.2.1.jar!/org/neo4j/graphdb/GraphDatabaseService.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="436">
-          <caret line="50" column="71" lean-forward="true" selection-start-line="50" selection-start-column="71" selection-end-line="50" selection-end-column="71" />
-          <folding>
-            <element signature="e#32#473#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding>
-            <element signature="e#32#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Database.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
-          <caret line="90" column="8" lean-forward="false" selection-start-line="90" selection-start-column="8" selection-end-line="90" selection-end-column="8" />
+        <state relative-caret-position="247">
+          <caret line="39" column="34" lean-forward="false" selection-start-line="39" selection-start-column="34" selection-end-line="39" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt">
+    <entry file="file://$PROJECT_DIR$/lib/build.dependencies">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="38" column="1" lean-forward="true" selection-start-line="38" selection-start-column="1" selection-end-line="38" selection-end-column="1" />
+        <state relative-caret-position="150">
+          <caret line="10" column="53" lean-forward="false" selection-start-line="10" selection-start-column="53" selection-end-line="10" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="157" column="20" lean-forward="false" selection-start-line="157" selection-start-column="20" selection-end-line="157" selection-end-column="20" />
           <folding>
-            <element signature="e#32#707#0" expanded="true" />
+            <element signature="e#32#359#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="121" column="87" lean-forward="false" selection-start-line="121" selection-start-column="87" selection-end-line="121" selection-end-column="87" />
+        <state relative-caret-position="356">
+          <caret line="136" column="18" lean-forward="false" selection-start-line="136" selection-start-column="18" selection-end-line="136" selection-end-column="18" />
           <folding>
-            <element signature="e#32#286#0" expanded="true" />
+            <element signature="e#32#332#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt">
+    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="266" column="30" lean-forward="false" selection-start-line="266" selection-start-column="30" selection-end-line="266" selection-end-column="30" />
+        <state relative-caret-position="411">
+          <caret line="73" column="43" lean-forward="false" selection-start-line="73" selection-start-column="43" selection-end-line="73" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-82">
+          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding>
-            <element signature="e#32#359#0" expanded="true" />
+            <element signature="e#32#648#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/src.zip!/java/util/UUID.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="379" column="42" lean-forward="true" selection-start-line="379" selection-start-column="42" selection-end-line="379" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="41" column="19" lean-forward="false" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
+          <folding>
+            <element signature="e#32#154#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Database.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="33" column="28" lean-forward="false" selection-start-line="33" selection-start-column="28" selection-end-line="33" selection-end-column="28" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1241,7 +1259,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>

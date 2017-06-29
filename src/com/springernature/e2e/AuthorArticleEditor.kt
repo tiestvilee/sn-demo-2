@@ -124,7 +124,7 @@ fun updateAuthorsForm(dataContext: DSLContext): HttpHandler = { request ->
     }
     ).joinToString()
     authorEditPage(manuscript, authors.state, originalContent.reserve(manuscript.authors, manuscript), typeSet(manuscript), "authors",
-        selectionDisplayer("readable-authors", authorSelection, authors.originalDocumentLocation, "authors"))
+        selectionDisplayer("readonly-authors", authorSelection, authors.originalDocumentLocation, "authors"))
 }
 
 private fun String.reserve(unreservedRange: FragmentOriginalDocumentLocation, manuscript: Manuscript): String {

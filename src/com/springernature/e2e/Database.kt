@@ -6,6 +6,8 @@ import org.jooq.Record
 import org.jooq.SQLDialect
 import org.jooq.Table
 import org.jooq.impl.DSL.*
+import org.neo4j.graphdb.Label.label
+import org.neo4j.graphdb.RelationshipType.withName
 import java.math.BigInteger
 import java.sql.Connection
 import java.util.*
@@ -29,6 +31,10 @@ fun Table<Record>.fieldNamed(fieldName: String) = name(fieldName) // name("publi
 
 object Database {
 
+    val manuscriptLabel = label("manuscript")
+    val titleRelationship = withName("title")
+    val abstractRelationship = withName("abstract")
+    val contentRelationship = withName("content")
 
     val manuscriptTable = table("manuscript")!!
     val manuscriptId = field(name("manId"), UUID::class.java)!!
