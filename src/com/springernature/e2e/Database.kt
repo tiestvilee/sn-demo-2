@@ -6,6 +6,7 @@ import org.jooq.Record
 import org.jooq.SQLDialect
 import org.jooq.Table
 import org.jooq.impl.DSL.*
+import org.jooq.impl.SQLDataType
 import org.neo4j.graphdb.Label.label
 import org.neo4j.graphdb.RelationshipType.withName
 import java.math.BigInteger
@@ -35,6 +36,14 @@ object ManuscriptTable {
     val manuscriptTable = table("manuscript")!!
     val manuscriptId = field(name("manId"), UUID::class.java)!!
     val payload = field("payload", String::class.java)!!
+}
+
+object AuthorTable {
+    val authorTable = table("author")!!
+    val authorId = field(name("authorId"), SQLDataType.UUID.nullable(false))!!
+    val personId = field(name("personId"), SQLDataType.UUID.nullable(true))!!
+    val institutionId = field(name("institutionId"), SQLDataType.UUID.nullable(true))!!
+    val payload = field("payload", SQLDataType.VARCHAR.nullable(false))!!
 }
 
 @Suppress("unused")
@@ -74,6 +83,14 @@ object Database {
             .createTableIfNotExists(ManuscriptTable.manuscriptTable)
             .column(ManuscriptTable.manuscriptId)
             .column(ManuscriptTable.payload)
+            .execute()
+
+        dataContext
+            .createTableIfNotExists(AuthorTable.authorTable)
+            .column(AuthorTable.authorId)
+            .column(AuthorTable.personId)
+            .column(AuthorTable.institutionId)
+            .column(AuthorTable.payload)
             .execute()
     }
 

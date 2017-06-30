@@ -214,16 +214,17 @@ private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState,
                 *formRows,
                 div(cl("row"),
                     div(cl("col-lg-3"),
-                        button("name" attr "action", "value" attr "previous", "Previous")
+                        button("name" attr "action", "value" attr "previous", "Save and Previous")
                     ),
                     div(cl("col-lg-3"),
-                        button("name" attr "action", "value" attr "revert", "Revert")
+                        button("name" attr "action", "value" attr "revert", "Revert"),
+                        button("name" attr "action", "value" attr "submit", "Save")
                     ),
                     div(cl("col-lg-3 input-group"),
                         approvedCheckbox(fragmentState)
                     ),
                     div(cl("col-lg-3"),
-                        button("name" attr "action", "value" attr "next", "Next")
+                        button("name" attr "action", "value" attr "next", "Save and Next")
                     )
                 )
             )
