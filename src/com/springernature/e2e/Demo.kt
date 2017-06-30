@@ -53,6 +53,7 @@ fun main(args: Array<String>) {
             dbSession(conn, graphDb, { dataContext, graphDbInTransaction ->
                 cors(routes(
                     "/article/{id:.+}/log" to GET bind logFor(dataContext),
+                    "/article/{id:.+}/asGraph" to GET bind graphFor(graphDbInTransaction),
                     "/article/{id:.+}/asXml" to GET bind asXml(dataContext),
                     "/article/{id:.+}/asPdf" to GET bind asPdf(dataContext),
                     "/article/{id:.+}/title" to GET bind updateTitleForm(dataContext),

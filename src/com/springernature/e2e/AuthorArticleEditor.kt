@@ -1,6 +1,7 @@
 package com.springernature.e2e
 
 import com.springernature.e2e.Database.manuscriptId
+import com.springernature.e2e.Database.manuscriptLabel
 import com.springernature.kachtml.*
 import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
@@ -8,6 +9,9 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.path
 import org.jooq.DSLContext
+import org.neo4j.graphdb.GraphDatabaseService
+import org.neo4j.graphdb.Node
+import org.neo4j.helpers.collection.Iterators.loop
 import java.time.ZonedDateTime
 import java.util.*
 
@@ -72,6 +76,36 @@ fun logFor(dataContext: DSLContext): HttpHandler = { request ->
     Response(Status.OK).header("Content-Type", "text/plain; charset=utf-8")
         .body(body)
 }
+
+fun graphFor(graphDb: GraphDatabaseService): HttpHandler = { request ->
+    val id = request.path("id")
+    val body = StringBuilder("Graph!$id\n")
+
+    graphDb.findNodes(manuscriptLabel, "id", id).use {
+        for (node in loop(it)) {
+            outputNode(body, node, "", mutableSetOf())
+        }
+    }
+
+    Response(Status.OK).header("Content-Type", "text/plain; charset=utf-8")
+        .body(body.toString())
+}
+
+fun outputNode(builder: StringBuilder, node: Node, indent: String, visitedNodes: MutableSet<Long>) {
+    visitedNodes.add(node.id)
+    builder.append(indent).append("NODE: ").append(node.id).append(" (" + node.labels.joinToString(", ")).append(")\n")
+    node.allProperties.forEach { name, value ->
+        builder.append(indent).append(name).append(" -> ").append(value.toString().trimTo(60)).append("\n")
+    }
+    node.getRelationships().forEach { relationship ->
+        if (!visitedNodes.contains(relationship.endNodeId)) {
+            builder.append(indent).append("RELATION: ").append(relationship.type.name()).append("\n")
+            outputNode(builder, relationship.endNode, indent + "  ", visitedNodes)
+        }
+    }
+}
+
+private fun String.trimTo(length: Int): String = if (this.trim().length >= length) this.trim().substring(0, length - 3) + "..." else this.trim()
 
 fun asXml(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
