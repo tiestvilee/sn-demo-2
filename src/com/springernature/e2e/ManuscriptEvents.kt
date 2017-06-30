@@ -71,7 +71,7 @@ fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseSe
                                 .insertInto(manuscriptTable, Database.manuscriptId, Database.payload)
                                 .values(id.raw, manuscript.toJson())
                                 .execute()
-                            manuscript.toNode(graphDbInTransaction)
+                            manuscript.saveNode(graphDbInTransaction)
 
                         }
                     }
@@ -81,6 +81,7 @@ fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseSe
                         saveManuscriptToDb(
                             dataContext,
                             updateContentFrom(event.updateManuscript(manuscript)))
+                        manuscript.saveNode(graphDbInTransaction)
                     }
                     "SetAuthorsFragment" -> {
                         val event = SetAuthorsFragment.Companion.fromJson(record[payload])
@@ -88,6 +89,7 @@ fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseSe
                         saveManuscriptToDb(
                             dataContext,
                             updateContentFrom(event.updateManuscript(manuscript)))
+                        manuscript.saveNode(graphDbInTransaction)
                     }
                     else -> throw RuntimeException("Don't understand transaction type: " + record[transactionType])
                 }

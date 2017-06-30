@@ -3,6 +3,7 @@ package com.springernature.e2e
 import com.google.gson.Gson
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
+import org.neo4j.graphdb.Relationship
 import java.util.*
 
 data class MarkUp(override val raw: String) : HasExternalForm<String>
@@ -30,7 +31,7 @@ data class MarkUpFragment(val markUp: MarkUp, val approved: Boolean, override va
     val valid: Boolean
         get() = !markUp.raw.isNullOrBlank()
 
-    fun toNode(graphDb: GraphDatabaseService): Node {
+    fun saveNode(graphDb: GraphDatabaseService): Node {
         val node = graphDb.createNode()
             .prop("markUp", markUp.raw)
             .prop("approved", approved)
@@ -68,13 +69,21 @@ data class Manuscript(
         fun EMPTY(id: ManuscriptId) = Manuscript(id, MarkUpFragment(MarkUp(""), false, null), MarkUpFragment(MarkUp(""), false, null), MarkUpFragment(MarkUp(""), false, null), Authors(null, false))
     }
 
-    fun toNode(graphDb: GraphDatabaseService) {
+    fun saveNode(graphDb: GraphDatabaseService): Node {
+        val existingNode = graphDb.findNode(Database.manuscriptLabel, "id", this.id.raw.toString())
+        if (existingNode != null) {
+            existingNode.getRelationships(Database.titleRelationship).deleteOtherEnd()
+            existingNode.getRelationships(Database.abstractRelationship).deleteOtherEnd()
+            existingNode.getRelationships(Database.contentRelationship).deleteOtherEnd()
+            existingNode.delete()
+        }
         val manuscript = graphDb.createNode(Database.manuscriptLabel)
             .prop("id", id.raw.toString())
 
-        manuscript.createRelationshipTo(title.toNode(graphDb), Database.titleRelationship)
-        manuscript.createRelationshipTo(abstract.toNode(graphDb), Database.abstractRelationship)
-        manuscript.createRelationshipTo(content.toNode(graphDb), Database.contentRelationship)
+        manuscript.createRelationshipTo(title.saveNode(graphDb), Database.titleRelationship)
+        manuscript.createRelationshipTo(abstract.saveNode(graphDb), Database.abstractRelationship)
+        manuscript.createRelationshipTo(content.saveNode(graphDb), Database.contentRelationship)
+        return manuscript
     }
 
 }
@@ -82,4 +91,11 @@ data class Manuscript(
 private fun Node.prop(name: String, value: Any?): Node {
     this.setProperty(name, value)
     return this
+}
+
+private fun MutableIterable<Relationship>.deleteOtherEnd() {
+    this.forEach {
+        it.endNode.delete()
+        it.delete()
+    }
 }
