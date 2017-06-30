@@ -64,7 +64,6 @@ data class Manuscript(
     fun toJson(): String = Gson().toJson(this)
 
     companion object {
-
         fun fromJson(payload: String): Manuscript = Gson().fromJson<Manuscript>(payload, Manuscript::class.java)
         fun EMPTY(id: ManuscriptId) = Manuscript(id, MarkUpFragment(MarkUp(""), false, null), MarkUpFragment(MarkUp(""), false, null), MarkUpFragment(MarkUp(""), false, null), Authors(null, false))
     }
@@ -79,6 +78,15 @@ data class Manuscript(
         }
         val manuscript = graphDb.createNode(Database.manuscriptLabel)
             .prop("id", id.raw.toString())
+            .prop("authors.approved", authors.approved).let {
+            if (authors.originalDocumentLocation != null) {
+                it.prop("authors.startSelection", authors.originalDocumentLocation.first)
+                    .prop("authors.endSelection", authors.originalDocumentLocation.last)
+            } else {
+                it
+            }
+        }
+
 
         manuscript.createRelationshipTo(title.saveNode(graphDb), Database.titleRelationship)
         manuscript.createRelationshipTo(abstract.saveNode(graphDb), Database.abstractRelationship)

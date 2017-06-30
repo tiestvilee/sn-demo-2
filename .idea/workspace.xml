@@ -4,7 +4,6 @@
     <list default="true" id="2c8d7ee3-6590-40f0-b606-8e4aae1faa1f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -99,8 +98,8 @@
       <file leaf-file-name="Domain.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1455">
-              <caret line="97" column="27" lean-forward="true" selection-start-line="97" selection-start-column="27" selection-end-line="97" selection-end-column="27" />
+            <state relative-caret-position="131">
+              <caret line="76" column="33" lean-forward="true" selection-start-line="76" selection-start-column="33" selection-end-line="76" selection-end-column="33" />
               <folding>
                 <element signature="e#32#192#0" expanded="true" />
               </folding>
@@ -801,7 +800,14 @@
       <option name="project" value="LOCAL" />
       <updated>1498812282556</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Update graph when manuscript updated">
+      <created>1498814266862</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1498814266862</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TodoView">
@@ -878,7 +884,8 @@
     <MESSAGE value="add in author region selection" />
     <MESSAGE value="introduce neo4j as a 'read optimised store', alongside H2" />
     <MESSAGE value="add endpoint for viewing an article's graph" />
-    <option name="LAST_COMMIT_MESSAGE" value="add endpoint for viewing an article's graph" />
+    <MESSAGE value="Update graph when manuscript updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update graph when manuscript updated" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1203,8 +1210,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1455">
-          <caret line="97" column="27" lean-forward="true" selection-start-line="97" selection-start-column="27" selection-end-line="97" selection-end-column="27" />
+        <state relative-caret-position="131">
+          <caret line="76" column="33" lean-forward="true" selection-start-line="76" selection-start-column="33" selection-end-line="76" selection-end-column="33" />
           <folding>
             <element signature="e#32#192#0" expanded="true" />
           </folding>
