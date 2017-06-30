@@ -1,7 +1,7 @@
 package com.springernature.e2e
 
-import com.springernature.e2e.Database.manuscriptId
-import com.springernature.e2e.Database.manuscriptLabel
+import com.springernature.e2e.ManuscriptTable.manuscriptId
+import com.springernature.e2e.ManuscriptTable.manuscriptLabel
 import com.springernature.kachtml.*
 import org.http4k.core.ContentType
 import org.http4k.core.HttpHandler
@@ -12,12 +12,19 @@ import org.jooq.DSLContext
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
 import org.neo4j.helpers.collection.Iterators.loop
+import java.io.File
 import java.time.ZonedDateTime
 import java.util.*
 
-val originalContent = """
+val originalContent = File("example.txt").readLines()
+    .mapIndexed { index, line ->
+        "<p data-index=\"$index\">$line</p>"
+    }
+    .joinToString("\n")
+
+val oldOriginalContent = """
 <p data-index="0">Epigenomic and functional analyses reveal roles of epialleles in the loss of photoperiod sensitivity during domestication of allotetraploid cottons</p>
-<p data-index="1">Qingxin Song, Tianzhen Zhang, David M. Stelly and Z. Jeffrey ChenEmail authorView ORCID ID profile</p>
+<p data-index="1">Qingxin Song, Tianzhen Zhang <t.zhang@wherever.com>, David M. Stelly(1234-2345-3456-4567), Z. Jeffrey Chen</p>
 <p data-index="2">Genome Biology201718:99</p>
 <p data-index="3">DOI: 10.1186/s13059-017-1229-8©  The Author(s). 2017</p>
 <p data-index="4">Received: 23 January 2017Accepted: 3 May 2017Published: 31 May 2017</p>

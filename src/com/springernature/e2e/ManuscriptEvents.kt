@@ -1,12 +1,12 @@
 package com.springernature.e2e
 
 import com.google.gson.Gson
-import com.springernature.e2e.Database.manuscriptId
-import com.springernature.e2e.Database.manuscriptTable
 import com.springernature.e2e.Database.maybeRetrieveManuscript
 import com.springernature.e2e.Database.retrieveManuscript
 import com.springernature.e2e.Database.saveManuscriptToDb
 import com.springernature.e2e.Database.transactionIdSequence
+import com.springernature.e2e.ManuscriptTable.manuscriptTable
+import com.springernature.e2e.TransactionLog.manuscriptId
 import com.springernature.e2e.TransactionLog.payload
 import com.springernature.e2e.TransactionLog.transactionId
 import com.springernature.e2e.TransactionLog.transactionLogTable
@@ -68,7 +68,7 @@ fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseSe
                             val event = CreateManuscript.Companion.fromJson(record[payload])
                             val manuscript = Manuscript.Companion.EMPTY(id).copy(content = MarkUpFragment(MarkUp(event.originalContent), false, null))
                             dataContext
-                                .insertInto(manuscriptTable, Database.manuscriptId, Database.payload)
+                                .insertInto(manuscriptTable, ManuscriptTable.manuscriptId, ManuscriptTable.payload)
                                 .values(id.raw, manuscript.toJson())
                                 .execute()
                             manuscript.saveNode(graphDbInTransaction)

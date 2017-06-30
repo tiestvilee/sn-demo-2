@@ -1,6 +1,6 @@
 package com.springernature.e2e
 
-import com.springernature.e2e.Database.manuscriptLabel
+import com.springernature.e2e.ManuscriptTable.manuscriptLabel
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST

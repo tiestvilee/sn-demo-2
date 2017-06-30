@@ -69,14 +69,14 @@ data class Manuscript(
     }
 
     fun saveNode(graphDb: GraphDatabaseService): Node {
-        val existingNode = graphDb.findNode(Database.manuscriptLabel, "id", this.id.raw.toString())
+        val existingNode = graphDb.findNode(ManuscriptTable.manuscriptLabel, "id", this.id.raw.toString())
         if (existingNode != null) {
-            existingNode.getRelationships(Database.titleRelationship).deleteOtherEnd()
-            existingNode.getRelationships(Database.abstractRelationship).deleteOtherEnd()
-            existingNode.getRelationships(Database.contentRelationship).deleteOtherEnd()
+            existingNode.getRelationships(ManuscriptTable.titleRelationship).deleteOtherEnd()
+            existingNode.getRelationships(ManuscriptTable.abstractRelationship).deleteOtherEnd()
+            existingNode.getRelationships(ManuscriptTable.contentRelationship).deleteOtherEnd()
             existingNode.delete()
         }
-        val manuscript = graphDb.createNode(Database.manuscriptLabel)
+        val manuscript = graphDb.createNode(ManuscriptTable.manuscriptLabel)
             .prop("id", id.raw.toString())
             .prop("authors.approved", authors.approved).let {
             if (authors.originalDocumentLocation != null) {
@@ -88,9 +88,9 @@ data class Manuscript(
         }
 
 
-        manuscript.createRelationshipTo(title.saveNode(graphDb), Database.titleRelationship)
-        manuscript.createRelationshipTo(abstract.saveNode(graphDb), Database.abstractRelationship)
-        manuscript.createRelationshipTo(content.saveNode(graphDb), Database.contentRelationship)
+        manuscript.createRelationshipTo(title.saveNode(graphDb), ManuscriptTable.titleRelationship)
+        manuscript.createRelationshipTo(abstract.saveNode(graphDb), ManuscriptTable.abstractRelationship)
+        manuscript.createRelationshipTo(content.saveNode(graphDb), ManuscriptTable.contentRelationship)
         return manuscript
     }
 

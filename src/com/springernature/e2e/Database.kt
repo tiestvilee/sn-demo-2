@@ -26,11 +26,7 @@ object ProcessedEvent {
 
 }
 
-@Suppress("unused")
-fun Table<Record>.fieldNamed(fieldName: String) = name(fieldName) // name("public", name, fieldName)
-
-object Database {
-
+object ManuscriptTable {
     val manuscriptLabel = label("manuscript")
     val titleRelationship = withName("title")
     val abstractRelationship = withName("abstract")
@@ -39,6 +35,12 @@ object Database {
     val manuscriptTable = table("manuscript")!!
     val manuscriptId = field(name("manId"), UUID::class.java)!!
     val payload = field("payload", String::class.java)!!
+}
+
+@Suppress("unused")
+fun Table<Record>.fieldNamed(fieldName: String) = name(fieldName) // name("public", name, fieldName)
+
+object Database {
 
     val transactionIdSequence = sequence("transactionid_seq")
 
@@ -69,9 +71,9 @@ object Database {
             .execute()
 
         dataContext
-            .createTableIfNotExists(manuscriptTable)
-            .column(manuscriptId)
-            .column(payload)
+            .createTableIfNotExists(ManuscriptTable.manuscriptTable)
+            .column(ManuscriptTable.manuscriptId)
+            .column(ManuscriptTable.payload)
             .execute()
     }
 
@@ -81,9 +83,9 @@ object Database {
 
     fun maybeRetrieveManuscript(dataContext: DSLContext, id: ManuscriptId): Manuscript? {
         val record = dataContext
-            .select(payload)
-            .from(manuscriptTable)
-            .where(manuscriptId.eq(id.raw)).fetchOne()
+            .select(ManuscriptTable.payload)
+            .from(ManuscriptTable.manuscriptTable)
+            .where(ManuscriptTable.manuscriptId.eq(id.raw)).fetchOne()
         return record
             ?.let {
                 Manuscript.fromJson(it.value1())
@@ -95,9 +97,9 @@ object Database {
         if (start == null || end == null) null else IntRange(start, end)
 
     fun saveManuscriptToDb(dataContext: DSLContext, manuscript: Manuscript) {
-        dataContext.update(Database.manuscriptTable)
-            .set(Database.payload, manuscript.toJson())
-            .where(Database.manuscriptId.eq(manuscript.id.raw)).execute()
+        dataContext.update(ManuscriptTable.manuscriptTable)
+            .set(ManuscriptTable.payload, manuscript.toJson())
+            .where(ManuscriptTable.manuscriptId.eq(manuscript.id.raw)).execute()
     }
 }
 
