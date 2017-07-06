@@ -138,7 +138,7 @@ fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
     val fragment = manuscript.title
-    authorEditPage(manuscript, fragment.state, originalContent.reserve(manuscript.title, manuscript), typeSet(manuscript), "title",
+    authorEditPage(manuscript, fragment.state, manuscript.originalContent.reserve(manuscript.title, manuscript), typeSet(manuscript), "title",
         htmlEditor("editable-title", fragment.markUp.raw, fragment.originalDocumentLocation, "title"))
 }
 
@@ -148,7 +148,7 @@ fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
     val fragment = manuscript.abstract
-    authorEditPage(manuscript, fragment.state, originalContent.reserve(manuscript.abstract, manuscript), typeSet(manuscript), "abstract",
+    authorEditPage(manuscript, fragment.state, manuscript.originalContent.reserve(manuscript.abstract, manuscript), typeSet(manuscript), "abstract",
         htmlEditor("editable-abstract", fragment.markUp.raw, fragment.originalDocumentLocation, "abstract"))
 }
 
@@ -158,22 +158,22 @@ fun updateAuthorsForm(dataContext: DSLContext): HttpHandler = { request ->
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
     val authors = manuscript.authors
-    val authorSelection = originalContent.lines().filter({ line ->
+    val authorSelection = manuscript.originalContent.raw.lines().filter({ line ->
         Regex("data-index=\"([^\"]*)\"").find(line)?.groupValues?.get(1)
             ?.let { index -> authors.originalDocumentLocation?.contains(Integer.parseInt(index)) }
             ?: false
     }
     ).joinToString()
-    authorEditPage(manuscript, authors.state, originalContent.reserve(manuscript.authors, manuscript), typeSet(manuscript), "authors",
+    authorEditPage(manuscript, authors.state, manuscript.originalContent.reserve(manuscript.authors, manuscript), typeSet(manuscript), "authors",
         selectionDisplayer("readonly-authors", authorSelection, authors.originalDocumentLocation, "authors"))
 }
 
-private fun String.reserve(unreservedRange: FragmentOriginalDocumentLocation, manuscript: Manuscript): String {
+private fun MarkUp.reserve(unreservedRange: FragmentOriginalDocumentLocation, manuscript: Manuscript): String {
     val reservedRange = listOf(manuscript.title.originalDocumentLocation, manuscript.abstract.originalDocumentLocation, manuscript.authors.originalDocumentLocation)
         .filterNotNull()
         .filter { range -> range != unreservedRange.originalDocumentLocation }
     return reservedRange
-        .fold(this,
+            .fold(this.raw,
             { acc, range ->
                 range.fold(acc,
                     { acc2, index -> acc2.replace("data-index=\"$index\"", "data-index=\"$index\" data-already-used") })
@@ -398,6 +398,10 @@ function updateUiWithSelection(originalContent, content, current, selectionStart
 	return function (startIndex, endIndex) {
 
 			resetToOriginalManuscript(originalContent, content)
+
+            if(!startIndex) {
+                return;
+            }
 
 			start = content.querySelector("[data-index='" + startIndex + "']")
 

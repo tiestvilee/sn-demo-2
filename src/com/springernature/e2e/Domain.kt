@@ -55,17 +55,18 @@ data class Authors(override val originalDocumentLocation: IntRange?, val approve
 }
 
 data class Manuscript(
-    val id: ManuscriptId,
-    val title: MarkUpFragment,
-    val abstract: MarkUpFragment,
-    val content: MarkUpFragment,
-    val authors: Authors) {
+        val id: ManuscriptId,
+        val title: MarkUpFragment,
+        val abstract: MarkUpFragment,
+        val content: MarkUpFragment,
+        val authors: Authors,
+        val originalContent: MarkUp) {
 
     fun toJson(): String = Gson().toJson(this)
 
     companion object {
         fun fromJson(payload: String): Manuscript = Gson().fromJson<Manuscript>(payload, Manuscript::class.java)
-        fun EMPTY(id: ManuscriptId) = Manuscript(id, MarkUpFragment(MarkUp(""), false, null), MarkUpFragment(MarkUp(""), false, null), MarkUpFragment(MarkUp(""), false, null), Authors(null, false))
+        fun EMPTY(id: ManuscriptId) = Manuscript(id, MarkUpFragment(MarkUp(""), false, null), MarkUpFragment(MarkUp(""), false, null), MarkUpFragment(MarkUp(""), false, null), Authors(null, false), MarkUp(""))
     }
 
     fun saveNode(graphDb: GraphDatabaseService): Node {

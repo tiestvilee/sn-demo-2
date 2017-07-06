@@ -139,7 +139,7 @@ private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscri
 }
 
 fun updateContentFrom(manuscript: Manuscript): Manuscript {
-    val doc = Xml.document("<root>$originalContent</root>")
+    val doc = Xml.document("<root>${manuscript.originalContent.raw}</root>")
     val titleRange = manuscript.title.originalDocumentLocation ?: (-1..-1)
     val abstractRange = manuscript.abstract.originalDocumentLocation ?: (-1..-1)
     val authorsRange = manuscript.authors.originalDocumentLocation ?: (-1..-1)

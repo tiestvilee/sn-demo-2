@@ -66,7 +66,9 @@ fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseSe
                     "CreateManuscript" -> {
                         if (maybeRetrieveManuscript(dataContext, id) == null) {
                             val event = CreateManuscript.Companion.fromJson(record[payload])
-                            val manuscript = Manuscript.Companion.EMPTY(id).copy(content = MarkUpFragment(MarkUp(event.originalContent), false, null))
+                            val manuscript = Manuscript.Companion.EMPTY(id).copy(
+                                    content = MarkUpFragment(MarkUp(event.originalContent), false, null),
+                                    originalContent = MarkUp(event.originalContent))
                             dataContext
                                 .insertInto(manuscriptTable, ManuscriptTable.manuscriptId, ManuscriptTable.payload)
                                 .values(id.raw, manuscript.toJson())
@@ -90,6 +92,7 @@ fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseSe
                             dataContext,
                             updateContentFrom(event.updateManuscript(manuscript)))
                         manuscript.saveNode(graphDbInTransaction)
+                        extractAuthors(manuscript, event)
                     }
                     else -> throw RuntimeException("Don't understand transaction type: " + record[transactionType])
                 }
@@ -99,6 +102,9 @@ fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseSe
             })
         })
     dataContext.update(ProcessedEvent.processedEventTable).set(ProcessedEvent.transactionId, biggestTransactionId)
+}
+
+fun extractAuthors(manuscript: Manuscript, event: SetAuthorsFragment) {
 }
 
 private fun SetAuthorsFragment.updateManuscript(manuscript: Manuscript): Manuscript =
