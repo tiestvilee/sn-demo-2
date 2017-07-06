@@ -438,12 +438,13 @@ function copyContentSelectionBlockToForm() {
     var selectionStart = document.querySelector("input[name='selectionStart']");
     var selectionEnd = document.querySelector("input[name='selectionEnd']");
 
-	resetToOriginalManuscript(originalContent, content)
+	// resetToOriginalManuscript(originalContent, content)
+    updateUiWithSelection(originalContent, content, current, selectionStart, selectionEnd)(selectionStart.value, selectionEnd.value )
 
 	function selectCurrentBlock() {
 		getStartAndEndBlocksFromSelection(
 			updateUiWithSelection(originalContent, content, current, selectionStart, selectionEnd));
-		document.getSelection().collapse();
+//		document.getSelection().collapse();
 	}
 
 	var oldTimeout = null;
