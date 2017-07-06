@@ -181,20 +181,18 @@ private fun String.reserve(unreservedRange: FragmentOriginalDocumentLocation, ma
 }
 
 private fun htmlEditor(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String) =
-    div(cl("row responsive-margin bordered rounded"),
-        div(id(editorId), cl("html-editor with-scrollbars hack-height"), "contenteditable" attr "true", originalContent),
-        input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId),
-        input("type" attr "hidden", "name" attr "selectionStart", "value" attr (originalContentSelection?.first?.toString() ?: "")),
-        input("type" attr "hidden", "name" attr "selectionEnd", "value" attr (originalContentSelection?.last?.toString() ?: ""))
-    )
+        htmlEditor(editorId, originalContent, originalContentSelection, fieldName, true)
 
 private fun selectionDisplayer(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String) =
-    div(cl("row responsive-margin bordered rounded"),
-        div(id(editorId), cl("html-editor with-scrollbars hack-height"), "contenteditable" attr "false", originalContent),
-        input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId),
-        input("type" attr "hidden", "name" attr "selectionStart", "value" attr (originalContentSelection?.first?.toString() ?: "")),
-        input("type" attr "hidden", "name" attr "selectionEnd", "value" attr (originalContentSelection?.last?.toString() ?: ""))
-    )
+        htmlEditor(editorId, originalContent, originalContentSelection, fieldName, false)
+
+private fun htmlEditor(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String, editable: Boolean) =
+        div(cl("row responsive-margin bordered rounded"),
+                div(id(editorId), cl("html-editor with-scrollbars hack-height"), "contenteditable" attr editable.toString(), originalContent),
+                input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId),
+                input("type" attr "hidden", "name" attr "selectionStart", "value" attr (originalContentSelection?.first?.toString() ?: "")),
+                input("type" attr "hidden", "name" attr "selectionEnd", "value" attr (originalContentSelection?.last?.toString() ?: ""))
+        )
 
 private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState, originalManuscript: String, typesetManuscript: KTag, currentForm: String, vararg formRows: KTag): Response {
     return htmlPage(manuscript.title.markUp, div(cl("row"),
@@ -214,17 +212,17 @@ private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState,
                 *formRows,
                 div(cl("row"),
                     div(cl("col-lg-3"),
-                        button("name" attr "action", "value" attr "previous", "Save and Previous")
+                            button("action", "previous", "Save and Previous")
                     ),
                     div(cl("col-lg-3"),
-                        button("name" attr "action", "value" attr "revert", "Revert"),
-                        button("name" attr "action", "value" attr "submit", "Save")
+                            button("action", "revert", "Revert"),
+                            button("action", "submit", "Save")
                     ),
                     div(cl("col-lg-3 input-group"),
                         approvedCheckbox(fragmentState)
                     ),
                     div(cl("col-lg-3"),
-                        button("name" attr "action", "value" attr "next", "Save and Next")
+                            button("action", "next", "Save and Next")
                     )
                 )
             )
@@ -234,6 +232,8 @@ private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState,
         )
     ))
 }
+
+private fun button(name: String, value: String, contents: String) = button("name" attr name, "value" attr value, contents)
 
 private fun fragmentOption(currentForm: String, name: String, title: String, fragment: FragmentWithState): Option {
     return option("value" attr name, fragment.state.asIcon + " " + title,

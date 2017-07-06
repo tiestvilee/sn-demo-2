@@ -199,6 +199,8 @@ fun tbody(vararg params: Any): Tbody = Tbody(*params)
 
 fun td(vararg params: Any): Td = Td(*params)
 
+fun template(vararg params: Any): Template = Template(*params)
+
 fun textarea(vararg params: Any): Textarea = Textarea(*params)
 
 fun tfoot(vararg params: Any): Tfoot = Tfoot(*params)

@@ -191,6 +191,8 @@ class Tbody(vararg params: Any) : KTag("tbody", *params)
 
 class Td(vararg params: Any) : KTag("td", *params)
 
+class Template(vararg params: Any) : KTag("template", *params)
+
 class Textarea(vararg params: Any) : KTag("textarea", *params)
 
 class Tfoot(vararg params: Any) : KTag("tfoot", *params)

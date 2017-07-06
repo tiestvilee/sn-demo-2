@@ -1,8 +1,8 @@
 
-mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-core:jar|sources:2.9.0
-mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-client-okhttp:jar|sources:2.9.0
-mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-server-jetty:jar|sources:2.9.0
-mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-format-gson:jar|sources:2.9.0
+mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-core:jar|sources:2.11.2
+mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-client-okhttp:jar|sources:2.11.2
+mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-server-jetty:jar|sources:2.11.2
+mvn://dl.bintray.com/http4k/maven/org.http4k:http4k-format-gson:jar|sources:2.11.2
 
 mvn:com.squareup.okhttp3:okhttp:jar|sources:3.8.0
 mvn:com.squareup.okio:okio:jar|sources:1.13.0
