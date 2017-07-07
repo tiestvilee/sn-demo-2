@@ -43,7 +43,7 @@ val jatsTemplate = """<?xml version="1.0" encoding="UTF-8"?>
 
  */
 
-fun  jatsFrom(manuscript: Manuscript): Document {
+fun jatsFrom(manuscript: Manuscript): Document {
     val document = Xml.document(jatsTemplate)
 
     val title = Xml.document("<root>${manuscript.title.markUp.toXmlstring()}</root>").nodes("/root/child::node()")
@@ -61,11 +61,11 @@ fun  jatsFrom(manuscript: Manuscript): Document {
 }
 
 fun MarkUp.toXmlstring(): String {
-    return this.raw.replace(Regex("<br[^>]*>"),"")
+    return this.raw.replace(Regex("<br[^>]*>"), "")
 }
 
 private fun Node.appendFragment(fragment: List<Node>): Node {
-    fragment.forEach({node ->
+    fragment.forEach({ node ->
         this.appendChild(
             this.ownerDocument.adoptNode(
                 node.cloneNode(true)
@@ -78,7 +78,7 @@ private fun Node.appendFragment(fragment: List<Node>): Node {
 fun Node.removeChildren(): Node {
     val nodes = childNodes
 
-    while(nodes.length > 0) {
+    while (nodes.length > 0) {
         removeChild(nodes.item(0))
     }
 

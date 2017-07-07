@@ -11,7 +11,7 @@ import java.nio.ByteBuffer
 fun serveStaticData(): HttpHandler = { request ->
     val filePath = request.path("path")
     val theFile = File("static/$filePath")
-    val contentType = when(theFile.extension) {
+    val contentType = when (theFile.extension) {
         "png" -> "image/png"
         "js" -> "application/javascript"
         else -> "*/*"

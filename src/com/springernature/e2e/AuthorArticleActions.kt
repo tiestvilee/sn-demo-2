@@ -7,7 +7,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.lens.*
 import org.http4k.routing.path
-import org.jooq.DSLContext
+import org.jooq.Configuration
 import org.neo4j.graphdb.GraphDatabaseService
 import java.util.*
 
@@ -21,12 +21,12 @@ interface TransactionEvent : Jsonable {
 
 }
 
-fun createArticle(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
+fun createArticle(configuration: Configuration, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.randomUUID())
 
-    logEvent(dataContext, id, CreateManuscript(originalContent))
+    logEvent(configuration, id, CreateManuscript(originalContent))
 
-    processEvents(dataContext, graphDbInTransaction)
+    processEvents(configuration, graphDbInTransaction)
 
     Response(Status.Companion.SEE_OTHER)
         .header("Location", "/article/${id.raw}")
@@ -53,10 +53,10 @@ val formSelector = FormField.string().required("formSelector")
 
 val forms = listOf("title", "abstract", "authors")
 
-fun updateTitle(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
+fun updateTitle(configuration: Configuration, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val manuscript = Database.retrieveManuscript(dataContext, id)
+    val manuscript = Database.retrieveManuscript(configuration, id)
 
     val webForm = Body.webForm(FormValidator.Strict, titleParam, actionParam, formSelector, approvedParam, selectionStartParam, selectionEndParam).toLens()(request)
     val title = MarkUp(titleParam(webForm).replace(Regex("<p[^>]*>"), "").replace(Regex("</p[^>]*>"), ""))
@@ -69,14 +69,14 @@ fun updateTitle(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseServ
         val newManuscript = manuscript.copy(
             title = updateMarkUpFragment(title, approved ?: false, manuscript.title, selection)
         )
-        updateMarkupFragment(newManuscript, manuscript, dataContext, "title", newManuscript.title, graphDbInTransaction)
+        updateMarkupFragment(newManuscript, manuscript, configuration, "title", newManuscript.title, graphDbInTransaction)
     }
 
     Response(Status.SEE_OTHER)
         .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "title")}")
 }
 
-fun updateAbstract(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
+fun updateAbstract(dataContext: Configuration, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -99,7 +99,7 @@ fun updateAbstract(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseS
         .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "abstract")}")
 }
 
-fun updateAuthors(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
+fun updateAuthors(dataContext: Configuration, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
@@ -131,7 +131,7 @@ private fun formSuffix(action: String, selector: String, currentForm: String): S
         else -> currentForm
     }
 
-private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: DSLContext, fragmentName: String, fragment: MarkUpFragment, graphDbInTransaction: GraphDatabaseService) {
+private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: Configuration, fragmentName: String, fragment: MarkUpFragment, graphDbInTransaction: GraphDatabaseService) {
     if (newManuscript != manuscript) {
         logEvent(dataContext, manuscript.id, SetMarkupFragment(fragmentName, fragment))
         processEvents(dataContext, graphDbInTransaction)

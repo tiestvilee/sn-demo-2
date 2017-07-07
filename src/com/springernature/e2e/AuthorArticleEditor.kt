@@ -8,7 +8,8 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.path
-import org.jooq.DSLContext
+import org.jooq.Configuration
+import org.jooq.impl.DSL
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
 import org.neo4j.helpers.collection.Iterators.loop
@@ -66,10 +67,10 @@ val oldOriginalContent = """
 <p data-index="40">After DNase treatment, total RNA (2 μg) was used to produce cDNA with the Omniscript RT Kit (Qiagen, Valencia, CA, USA). The cDNA was used as the template for qRT-PCR using FastStart Universal SYBR Green Master (Roche, Indianapolis, IN, USA). The reaction was run on the LightCycler® 96 System (Roche, Pleasanton, CA, USA). The relative expression level of a gene was quantified using the expression value of cotton GhUBQ10 as an internal control using the primers (Additional file 10: Table S9).</p>
 """
 
-fun logFor(dataContext: DSLContext): HttpHandler = { request ->
+fun logFor(dataContext: Configuration): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val body = dataContext.select(TransactionLog.transactionId, TransactionLog.transactionType, TransactionLog.payload)
+    val body = DSL.using(dataContext).select(TransactionLog.transactionId, TransactionLog.transactionType, TransactionLog.payload)
         .from(TransactionLog.transactionLogTable)
         .where(manuscriptId.eq(id.raw))
         .fetchMany().fold("",
@@ -114,7 +115,7 @@ fun outputNode(builder: StringBuilder, node: Node, indent: String, visitedNodes:
 
 private fun String.trimTo(length: Int): String = if (this.trim().length >= length) this.trim().substring(0, length - 3) + "..." else this.trim()
 
-fun asXml(dataContext: DSLContext): HttpHandler = { request ->
+fun asXml(dataContext: Configuration): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -123,7 +124,7 @@ fun asXml(dataContext: DSLContext): HttpHandler = { request ->
         .body(jatsFrom(manuscript).asString())
 }
 
-fun asPdf(dataContext: DSLContext): HttpHandler = { request ->
+fun asPdf(dataContext: Configuration): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -132,7 +133,7 @@ fun asPdf(dataContext: DSLContext): HttpHandler = { request ->
         .body(org.http4k.core.Body(pdfFrom(manuscript)))
 }
 
-fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
+fun updateTitleForm(dataContext: Configuration): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -142,7 +143,7 @@ fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
         htmlEditor("editable-title", fragment.markUp.raw, fragment.originalDocumentLocation, "title"))
 }
 
-fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
+fun updateAbstractForm(dataContext: Configuration): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -152,7 +153,7 @@ fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
         htmlEditor("editable-abstract", fragment.markUp.raw, fragment.originalDocumentLocation, "abstract"))
 }
 
-fun updateAuthorsForm(dataContext: DSLContext): HttpHandler = { request ->
+fun updateAuthorsForm(dataContext: Configuration): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -173,7 +174,7 @@ private fun MarkUp.reserve(unreservedRange: FragmentOriginalDocumentLocation, ma
         .filterNotNull()
         .filter { range -> range != unreservedRange.originalDocumentLocation }
     return reservedRange
-            .fold(this.raw,
+        .fold(this.raw,
             { acc, range ->
                 range.fold(acc,
                     { acc2, index -> acc2.replace("data-index=\"$index\"", "data-index=\"$index\" data-already-used") })
@@ -181,18 +182,18 @@ private fun MarkUp.reserve(unreservedRange: FragmentOriginalDocumentLocation, ma
 }
 
 private fun htmlEditor(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String) =
-        htmlEditor(editorId, originalContent, originalContentSelection, fieldName, true)
+    htmlEditor(editorId, originalContent, originalContentSelection, fieldName, true)
 
 private fun selectionDisplayer(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String) =
-        htmlEditor(editorId, originalContent, originalContentSelection, fieldName, false)
+    htmlEditor(editorId, originalContent, originalContentSelection, fieldName, false)
 
 private fun htmlEditor(editorId: String, originalContent: String, originalContentSelection: IntRange?, fieldName: String, editable: Boolean) =
-        div(cl("row responsive-margin bordered rounded"),
-                div(id(editorId), cl("html-editor with-scrollbars hack-height"), "contenteditable" attr editable.toString(), originalContent),
-                input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId),
-                input("type" attr "hidden", "name" attr "selectionStart", "value" attr (originalContentSelection?.first?.toString() ?: "")),
-                input("type" attr "hidden", "name" attr "selectionEnd", "value" attr (originalContentSelection?.last?.toString() ?: ""))
-        )
+    div(cl("row responsive-margin bordered rounded"),
+        div(id(editorId), cl("html-editor with-scrollbars hack-height"), "contenteditable" attr editable.toString(), originalContent),
+        input("type" attr "hidden", cl("input-backing-for-div"), "name" attr fieldName, "data-for" attr editorId),
+        input("type" attr "hidden", "name" attr "selectionStart", "value" attr (originalContentSelection?.first?.toString() ?: "")),
+        input("type" attr "hidden", "name" attr "selectionEnd", "value" attr (originalContentSelection?.last?.toString() ?: ""))
+    )
 
 private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState, originalManuscript: String, typesetManuscript: KTag, currentForm: String, vararg formRows: KTag): Response {
     return htmlPage(manuscript.title.markUp, div(cl("row"),
@@ -212,17 +213,17 @@ private fun authorEditPage(manuscript: Manuscript, fragmentState: FragmentState,
                 *formRows,
                 div(cl("row"),
                     div(cl("col-lg-3"),
-                            button("action", "previous", "Save and Previous")
+                        button("action", "previous", "Save and Previous")
                     ),
                     div(cl("col-lg-3"),
-                            button("action", "revert", "Revert"),
-                            button("action", "submit", "Save")
+                        button("action", "revert", "Revert"),
+                        button("action", "submit", "Save")
                     ),
                     div(cl("col-lg-3 input-group"),
                         approvedCheckbox(fragmentState)
                     ),
                     div(cl("col-lg-3"),
-                            button("action", "next", "Save and Next")
+                        button("action", "next", "Save and Next")
                     )
                 )
             )

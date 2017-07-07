@@ -26,10 +26,10 @@ fun pdfFrom(manuscript: Manuscript): ByteBuffer {
 
     val abstract = Xml.document("<root>${manuscript.abstract.markUp.toXmlstring()}</root>").nodes("/root/child::node()")
 
-    abstract.forEach({node ->
+    abstract.forEach({ node ->
         bounds.upperRightY = offset
         offset = paragraph(contents, font, 12f, node.textContent, bounds)
-        if(offset < bounds.lowerLeftY) {
+        if (offset < bounds.lowerLeftY) {
             offset = a4.height - 100 + 50
             contents.close()
             page = PDPage(a4)
@@ -40,10 +40,10 @@ fun pdfFrom(manuscript: Manuscript): ByteBuffer {
 
     val content = Xml.document("<root>${manuscript.content.markUp.toXmlstring()}</root>").nodes("/root/child::node()")
 
-    content.forEach({node ->
+    content.forEach({ node ->
         bounds.upperRightY = offset
         offset = paragraph(contents, font, 12f, node.textContent, bounds)
-        if(offset < bounds.lowerLeftY) {
+        if (offset < bounds.lowerLeftY) {
             offset = a4.height - 100 + 50
             contents.close()
             page = PDPage(a4)
