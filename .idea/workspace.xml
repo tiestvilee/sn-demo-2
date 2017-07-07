@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2c8d7ee3-6590-40f0-b606-8e4aae1faa1f" name="Default" comment="save the original document into the DB payload">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyleSettings.xml" />
+    <list default="true" id="2c8d7ee3-6590-40f0-b606-8e4aae1faa1f" name="Default" comment="reverted to original use of dataContext for JOOQ">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/Database.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/Database.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/Jats.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/Jats.kt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/Pdf.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/Pdf.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/springernature/e2e/ServeStaticData.kt" afterPath="$PROJECT_DIR$/src/com/springernature/e2e/ServeStaticData.kt" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -34,9 +29,18 @@
       <file leaf-file-name="Demo.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="70" column="58" lean-forward="false" selection-start-line="70" selection-start-column="58" selection-end-line="70" selection-end-column="58" />
-              <folding />
+            <state relative-caret-position="-146">
+              <caret line="69" column="58" lean-forward="false" selection-start-line="69" selection-start-column="58" selection-end-line="69" selection-end-column="58" />
+              <folding>
+                <marker date="1499417199000" expanded="true" signature="39:221" ph="..." />
+                <marker date="1499417199000" expanded="true" signature="4022:4091" ph="{...}" />
+                <marker date="1499417199000" expanded="true" signature="4022:4101" ph="{...}" />
+                <marker date="1499417199000" expanded="true" signature="4022:4107" ph="{...}" />
+                <marker date="1499417199000" expanded="true" signature="4022:4109" ph="{...}" />
+                <marker date="1499417199000" expanded="true" signature="4175:4481" ph="{...}" />
+                <marker date="1499417199000" expanded="true" signature="4401:4478" ph="{...}" />
+                <marker date="1499417199000" expanded="true" signature="4430:4472" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -67,19 +71,28 @@
             <state relative-caret-position="136">
               <caret line="23" column="109" lean-forward="false" selection-start-line="23" selection-start-column="109" selection-end-line="23" selection-end-column="109" />
               <folding>
-                <element signature="e#32#335#0" expanded="true" />
+                <marker date="1499336253000" expanded="true" signature="39:257" ph="..." />
+                <marker date="1499336253000" expanded="true" signature="5653:6850" ph="{...}" />
+                <marker date="1499336253000" expanded="true" signature="5997:6558" ph="{...}" />
+                <marker date="1499336253000" expanded="true" signature="6070:6515" ph="{...}" />
+                <marker date="1499336253000" expanded="true" signature="6444:6491" ph="{...}" />
+                <marker date="1499336253000" expanded="true" signature="6521:6552" ph="{...}" />
+                <marker date="1499336253000" expanded="true" signature="6899:7123" ph="{...}" />
+                <marker date="1499336253000" expanded="true" signature="7043:7095" ph="{...}" />
+                <marker date="1499336253000" expanded="true" signature="7101:7121" ph="{...}" />
+                <marker date="1499336253000" expanded="true" signature="7263:7449" ph="{...}" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ManuscriptEvents.kt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ManuscriptEvents.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="91" column="38" lean-forward="false" selection-start-line="91" selection-start-column="38" selection-end-line="91" selection-end-column="38" />
+            <state relative-caret-position="153">
+              <caret line="109" column="8" lean-forward="false" selection-start-line="109" selection-start-column="8" selection-end-line="109" selection-end-column="8" />
               <folding>
-                <element signature="e#32#849#0" expanded="true" />
+                <element signature="e#32#821#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -98,9 +111,25 @@
       <file leaf-file-name="AuthorArticleEditor.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="78" column="24" lean-forward="false" selection-start-line="78" selection-start-column="24" selection-end-line="78" selection-end-column="24" />
-              <folding />
+            <state relative-caret-position="243">
+              <caret line="77" column="24" lean-forward="false" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
+              <folding>
+                <marker date="1499421294000" expanded="false" signature="39:368" ph="..." />
+                <marker date="1499421294000" expanded="true" signature="26410:26648" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="26888:27072" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="26997:27037" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="27043:27069" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="27145:27463" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="27510:27560" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="27599:27766" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="27805:29183" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="27818:29181" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="29243:29360" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="29375:29904" ph="&quot;&quot;&quot; .full-screen-height { ...&quot;&quot;&quot;" />
+                <marker date="1499421294000" expanded="true" signature="29920:34150" ph="&quot;&quot;&quot; function copyInputBackedDivsOnFormSubmit() { ...&quot;&quot;&quot;" />
+                <marker date="1499421294000" expanded="true" signature="34213:34376" ph="{...}" />
+                <marker date="1499421294000" expanded="true" signature="34431:35422" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -108,19 +137,31 @@
       <file leaf-file-name="Domain.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
+            <state relative-caret-position="152">
               <caret line="46" column="11" lean-forward="false" selection-start-line="46" selection-start-column="11" selection-end-line="46" selection-end-column="11" />
-              <folding />
+              <folding>
+                <marker date="1499420721000" expanded="true" signature="2034:2364" ph="{...}" />
+                <marker date="1499420721000" expanded="true" signature="2420:3724" ph="{...}" />
+                <marker date="1499420721000" expanded="true" signature="2563:2895" ph="{...}" />
+                <marker date="1499420721000" expanded="true" signature="3076:3380" ph="{...}" />
+                <marker date="1499420721000" expanded="true" signature="3136:3330" ph="{...}" />
+                <marker date="1499420721000" expanded="true" signature="3336:3370" ph="{...}" />
+                <marker date="1499420721000" expanded="true" signature="3784:3837" ph="{...}" />
+                <marker date="1499420721000" expanded="true" signature="3898:3974" ph="{...}" />
+                <marker date="1499420721000" expanded="true" signature="3917:3972" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Database.kt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Database.kt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Database.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="283">
-              <caret line="101" column="40" lean-forward="false" selection-start-line="101" selection-start-column="40" selection-end-line="101" selection-end-column="40" />
-              <folding />
+            <state relative-caret-position="233">
+              <caret line="72" column="19" lean-forward="true" selection-start-line="72" selection-start-column="19" selection-end-line="72" selection-end-column="19" />
+              <folding>
+                <element signature="e#32#417#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -188,8 +229,8 @@
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleActions.kt" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt" />
-        <option value="$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt" />
         <option value="$PROJECT_DIR$/src/com/springernature/e2e/Database.kt" />
+        <option value="$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt" />
       </list>
     </option>
   </component>
@@ -987,19 +1028,20 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1436" height="877" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32866243" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32866243" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Buck" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299363" sideWeight="0.5028694" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" x="100" y="123" width="1236" height="677" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32866243" sideWeight="0.49713057" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32866243" sideWeight="0.49713057" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299363" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2840746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2840746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32866243" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1008,10 +1050,29 @@
       <window_info id="Key Promoter" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32866243" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Buck" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299363" sideWeight="0.5028694" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" x="100" y="123" width="1236" height="677" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32866243" sideWeight="0.49713057" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299363" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2840746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32866243" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Key Promoter" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -1022,6 +1083,24 @@
         <option value="3" />
         <option value="1" />
       </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
     </option>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1036,7 +1115,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="change over to using content editable divs for title and abstract forms" />
     <MESSAGE value="navigate between forms using dropdown" />
     <MESSAGE value="copy selected blocks from original manuscript to form" />
     <MESSAGE value="introduce concept of MarkUpFragment - that includes approval and range in original manuscript" />
@@ -1061,7 +1139,8 @@
     <MESSAGE value="update to latest http4k" />
     <MESSAGE value="have current selection selected when navigating to a page" />
     <MESSAGE value="save the original document into the DB payload" />
-    <option name="LAST_COMMIT_MESSAGE" value="save the original document into the DB payload" />
+    <MESSAGE value="reverted to original use of dataContext for JOOQ" />
+    <option name="LAST_COMMIT_MESSAGE" value="reverted to original use of dataContext for JOOQ" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -1230,42 +1309,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="110" column="41" lean-forward="false" selection-start-line="110" selection-start-column="41" selection-end-line="110" selection-end-column="41" />
-          <folding>
-            <element signature="e#0#17881#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#3183#3184#0" expanded="false" />
-            <element signature="e#3228#3229#0" expanded="false" />
-            <element signature="e#3499#3500#0" expanded="false" />
-            <element signature="e#3541#3542#0" expanded="false" />
-            <element signature="e#3847#3848#0" expanded="false" />
-            <element signature="e#3896#3897#0" expanded="false" />
-            <element signature="e#4167#4168#0" expanded="false" />
-            <element signature="e#4209#4210#0" expanded="false" />
-            <element signature="e#4500#4501#0" expanded="false" />
-            <element signature="e#4546#4547#0" expanded="false" />
-            <element signature="e#4822#4823#0" expanded="false" />
-            <element signature="e#4865#4866#0" expanded="false" />
-            <element signature="e#5176#5177#0" expanded="false" />
-            <element signature="e#5226#5227#0" expanded="false" />
-            <element signature="e#5502#5503#0" expanded="false" />
-            <element signature="e#5545#5546#0" expanded="false" />
-            <element signature="e#9228#9229#0" expanded="false" />
-            <element signature="e#9279#9280#0" expanded="false" />
-            <element signature="e#9416#9417#0" expanded="false" />
-            <element signature="e#9474#9475#0" expanded="false" />
-            <element signature="e#9779#9780#0" expanded="false" />
-            <element signature="e#9830#9831#0" expanded="false" />
-            <element signature="e#9967#9968#0" expanded="false" />
-            <element signature="e#10025#10026#0" expanded="false" />
-            <element signature="e#14659#14660#0" expanded="false" />
-            <element signature="e#14703#14704#0" expanded="false" />
-            <element signature="e#14999#15000#0" expanded="false" />
-            <element signature="e#15046#15047#0" expanded="false" />
-            <element signature="e#15362#15363#0" expanded="false" />
-            <element signature="e#15413#15414#0" expanded="false" />
-            <element signature="e#15684#15685#0" expanded="false" />
-            <element signature="e#15726#15727#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1280,7 +1323,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="18" column="62" lean-forward="false" selection-start-line="18" selection-start-column="62" selection-end-line="18" selection-end-column="62" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1288,7 +1330,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1296,7 +1337,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="81">
           <caret line="105" column="0" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1304,7 +1344,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="181">
           <caret line="113" column="0" lean-forward="false" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1312,15 +1351,24 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Domain.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
+        <state relative-caret-position="152">
           <caret line="46" column="11" lean-forward="false" selection-start-line="46" selection-start-column="11" selection-end-line="46" selection-end-column="11" />
-          <folding />
+          <folding>
+            <marker date="1499420721000" expanded="true" signature="2034:2364" ph="{...}" />
+            <marker date="1499420721000" expanded="true" signature="2420:3724" ph="{...}" />
+            <marker date="1499420721000" expanded="true" signature="2563:2895" ph="{...}" />
+            <marker date="1499420721000" expanded="true" signature="3076:3380" ph="{...}" />
+            <marker date="1499420721000" expanded="true" signature="3136:3330" ph="{...}" />
+            <marker date="1499420721000" expanded="true" signature="3336:3370" ph="{...}" />
+            <marker date="1499420721000" expanded="true" signature="3784:3837" ph="{...}" />
+            <marker date="1499420721000" expanded="true" signature="3898:3974" ph="{...}" />
+            <marker date="1499420721000" expanded="true" signature="3917:3972" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1352,7 +1400,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="636">
           <caret line="167" column="17" lean-forward="false" selection-start-line="167" selection-start-column="17" selection-end-line="167" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1360,15 +1407,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="82" lean-forward="false" selection-start-line="4" selection-start-column="82" selection-end-line="4" selection-end-column="82" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Demo.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="70" column="58" lean-forward="false" selection-start-line="70" selection-start-column="58" selection-end-line="70" selection-end-column="58" />
-          <folding />
+        <state relative-caret-position="-146">
+          <caret line="69" column="58" lean-forward="false" selection-start-line="69" selection-start-column="58" selection-end-line="69" selection-end-column="58" />
+          <folding>
+            <marker date="1499417199000" expanded="true" signature="39:221" ph="..." />
+            <marker date="1499417199000" expanded="true" signature="4022:4091" ph="{...}" />
+            <marker date="1499417199000" expanded="true" signature="4022:4101" ph="{...}" />
+            <marker date="1499417199000" expanded="true" signature="4022:4107" ph="{...}" />
+            <marker date="1499417199000" expanded="true" signature="4022:4109" ph="{...}" />
+            <marker date="1499417199000" expanded="true" signature="4175:4481" ph="{...}" />
+            <marker date="1499417199000" expanded="true" signature="4401:4478" ph="{...}" />
+            <marker date="1499417199000" expanded="true" signature="4430:4472" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1377,34 +1432,61 @@
         <state relative-caret-position="136">
           <caret line="23" column="109" lean-forward="false" selection-start-line="23" selection-start-column="109" selection-end-line="23" selection-end-column="109" />
           <folding>
-            <element signature="e#32#335#0" expanded="true" />
+            <marker date="1499336253000" expanded="true" signature="39:257" ph="..." />
+            <marker date="1499336253000" expanded="true" signature="5653:6850" ph="{...}" />
+            <marker date="1499336253000" expanded="true" signature="5997:6558" ph="{...}" />
+            <marker date="1499336253000" expanded="true" signature="6070:6515" ph="{...}" />
+            <marker date="1499336253000" expanded="true" signature="6444:6491" ph="{...}" />
+            <marker date="1499336253000" expanded="true" signature="6521:6552" ph="{...}" />
+            <marker date="1499336253000" expanded="true" signature="6899:7123" ph="{...}" />
+            <marker date="1499336253000" expanded="true" signature="7043:7095" ph="{...}" />
+            <marker date="1499336253000" expanded="true" signature="7101:7121" ph="{...}" />
+            <marker date="1499336253000" expanded="true" signature="7263:7449" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/AuthorArticleEditor.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="78" column="24" lean-forward="false" selection-start-line="78" selection-start-column="24" selection-end-line="78" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="91" column="38" lean-forward="false" selection-start-line="91" selection-start-column="38" selection-end-line="91" selection-end-column="38" />
+        <state relative-caret-position="243">
+          <caret line="77" column="24" lean-forward="false" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
           <folding>
-            <element signature="e#32#849#0" expanded="true" />
+            <marker date="1499421294000" expanded="false" signature="39:368" ph="..." />
+            <marker date="1499421294000" expanded="true" signature="26410:26648" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="26888:27072" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="26997:27037" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="27043:27069" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="27145:27463" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="27510:27560" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="27599:27766" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="27805:29183" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="27818:29181" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="29243:29360" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="29375:29904" ph="&quot;&quot;&quot; .full-screen-height { ...&quot;&quot;&quot;" />
+            <marker date="1499421294000" expanded="true" signature="29920:34150" ph="&quot;&quot;&quot; function copyInputBackedDivsOnFormSubmit() { ...&quot;&quot;&quot;" />
+            <marker date="1499421294000" expanded="true" signature="34213:34376" ph="{...}" />
+            <marker date="1499421294000" expanded="true" signature="34431:35422" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/Database.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="283">
-          <caret line="101" column="40" lean-forward="false" selection-start-line="101" selection-start-column="40" selection-end-line="101" selection-end-column="40" />
-          <folding />
+        <state relative-caret-position="233">
+          <caret line="72" column="19" lean-forward="true" selection-start-line="72" selection-start-column="19" selection-end-line="72" selection-end-column="19" />
+          <folding>
+            <element signature="e#32#417#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/springernature/e2e/ManuscriptEvents.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="109" column="8" lean-forward="false" selection-start-line="109" selection-start-column="8" selection-end-line="109" selection-end-column="8" />
+          <folding>
+            <element signature="e#32#821#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -1,11 +1,10 @@
 package com.springernature.e2e
 
 import com.springernature.e2e.ProcessedEvent.processedEventTable
-import org.jooq.Configuration
+import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.SQLDialect
 import org.jooq.Table
-import org.jooq.impl.DSL
 import org.jooq.impl.DSL.*
 import org.jooq.impl.SQLDataType
 import org.neo4j.graphdb.Label.label
@@ -76,9 +75,11 @@ object Database {
             .column(ProcessedEvent.transactionId)
             .execute()
 
-        dataContext.deleteFrom(processedEventTable).execute()
-        dataContext.insertInto(processedEventTable, ProcessedEvent.transactionId).values(BigInteger.valueOf(-1))
-            .execute()
+        val howManyRows = dataContext.select(count(ProcessedEvent.transactionId)).from(processedEventTable).fetchOne()
+        if (howManyRows[0] == 0) {
+            dataContext.insertInto(processedEventTable, ProcessedEvent.transactionId).values(BigInteger.valueOf(-1))
+                .execute()
+        }
 
         dataContext
             .createTableIfNotExists(ManuscriptTable.manuscriptTable)
@@ -95,12 +96,12 @@ object Database {
             .execute()
     }
 
-    fun retrieveManuscript(configuration: Configuration, id: ManuscriptId): Manuscript {
-        return maybeRetrieveManuscript(configuration, id) ?: throw RuntimeException("not found")
+    fun retrieveManuscript(dataContext: DSLContext, id: ManuscriptId): Manuscript {
+        return maybeRetrieveManuscript(dataContext, id) ?: throw RuntimeException("not found")
     }
 
-    fun maybeRetrieveManuscript(configuration: Configuration, id: ManuscriptId): Manuscript? {
-        val record = DSL.using(configuration)
+    fun maybeRetrieveManuscript(dataContext: DSLContext, id: ManuscriptId): Manuscript? {
+        val record = dataContext
             .select(ManuscriptTable.payload)
             .from(ManuscriptTable.manuscriptTable)
             .where(ManuscriptTable.manuscriptId.eq(id.raw)).fetchOne()
@@ -114,11 +115,10 @@ object Database {
     private fun intRangeFromDbFields(start: Int?, end: Int?) =
         if (start == null || end == null) null else IntRange(start, end)
 
-    fun saveManuscriptToDb(configuration: Configuration, manuscript: Manuscript) {
-        DSL.using(configuration).update(ManuscriptTable.manuscriptTable)
+    fun saveManuscriptToDb(dataContext: DSLContext, manuscript: Manuscript) {
+        dataContext.update(ManuscriptTable.manuscriptTable)
             .set(ManuscriptTable.payload, manuscript.toJson())
-            .where(ManuscriptTable.manuscriptId.eq(manuscript.id.raw))
-            .execute()
+            .where(ManuscriptTable.manuscriptId.eq(manuscript.id.raw)).execute()
     }
 }
 

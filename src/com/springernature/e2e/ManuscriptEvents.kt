@@ -11,8 +11,7 @@ import com.springernature.e2e.TransactionLog.payload
 import com.springernature.e2e.TransactionLog.transactionId
 import com.springernature.e2e.TransactionLog.transactionLogTable
 import com.springernature.e2e.TransactionLog.transactionType
-import org.jooq.Configuration
-import org.jooq.impl.DSL
+import org.jooq.DSLContext
 import org.jooq.impl.DSL.`val`
 import org.jooq.impl.DSL.select
 import org.neo4j.graphdb.GraphDatabaseService
@@ -42,8 +41,8 @@ data class SetAuthorsFragment(val authors: Authors) : TransactionEvent {
     }
 }
 
-fun logEvent(dataContext: Configuration, id: ManuscriptId, event: TransactionEvent) {
-    DSL.using(dataContext).insertInto(transactionLogTable, transactionId, transactionType, manuscriptId, payload)
+fun logEvent(dataContext: org.jooq.DSLContext, id: ManuscriptId, event: TransactionEvent) {
+    dataContext.insertInto(transactionLogTable, transactionId, transactionType, manuscriptId, payload)
         .values(
             transactionIdSequence.nextval(),
             `val`(event.javaClass.simpleName),
@@ -51,12 +50,12 @@ fun logEvent(dataContext: Configuration, id: ManuscriptId, event: TransactionEve
             `val`(event.toJson())).execute()
 }
 
-fun processEvents(configuration: Configuration, graphDbInTransaction: GraphDatabaseService) {
+fun processEvents(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService) {
     var biggestTransactionId = java.math.BigInteger.valueOf(-1)
 
-    println(DSL.using(configuration).select(ProcessedEvent.transactionId).from(ProcessedEvent.processedEventTable).fetchAny())
+    println(dataContext.select(ProcessedEvent.transactionId).from(ProcessedEvent.processedEventTable).fetchAny())
 
-    DSL.using(configuration)
+    dataContext
         .select(manuscriptId, transactionId, payload, transactionType)
         .from(transactionLogTable)
         .where(
@@ -73,12 +72,12 @@ fun processEvents(configuration: Configuration, graphDbInTransaction: GraphDatab
 
                 when (record[transactionType]) {
                     "CreateManuscript" -> {
-                        if (maybeRetrieveManuscript(configuration, id) == null) {
+                        if (maybeRetrieveManuscript(dataContext, id) == null) {
                             val event = CreateManuscript.Companion.fromJson(record[payload])
                             val manuscript = Manuscript.Companion.EMPTY(id).copy(
                                 content = MarkUpFragment(MarkUp(event.originalContent), false, null),
                                 originalContent = MarkUp(event.originalContent))
-                            DSL.using(configuration)
+                            dataContext
                                 .insertInto(manuscriptTable, ManuscriptTable.manuscriptId, ManuscriptTable.payload)
                                 .values(id.raw, manuscript.toJson())
                                 .execute()
@@ -88,17 +87,17 @@ fun processEvents(configuration: Configuration, graphDbInTransaction: GraphDatab
                     }
                     "SetMarkupFragment" -> {
                         val event = SetMarkupFragment.Companion.fromJson(record[payload])
-                        val manuscript = retrieveManuscript(configuration, id)
+                        val manuscript = retrieveManuscript(dataContext, id)
                         saveManuscriptToDb(
-                            configuration,
+                            dataContext,
                             updateContentFrom(event.updateManuscript(manuscript)))
                         manuscript.saveNode(graphDbInTransaction)
                     }
                     "SetAuthorsFragment" -> {
                         val event = SetAuthorsFragment.Companion.fromJson(record[payload])
-                        val manuscript = retrieveManuscript(configuration, id)
+                        val manuscript = retrieveManuscript(dataContext, id)
                         saveManuscriptToDb(
-                            configuration,
+                            dataContext,
                             updateContentFrom(event.updateManuscript(manuscript)))
                         manuscript.saveNode(graphDbInTransaction)
                         extractAuthors(manuscript, event)
@@ -108,12 +107,11 @@ fun processEvents(configuration: Configuration, graphDbInTransaction: GraphDatab
                 biggestTransactionId = transaction
             })
         })
-    if (biggestTransactionId.compareTo(BigInteger.ZERO) >= 0) {
+    if (biggestTransactionId >= BigInteger.ZERO) {
         println("have processed transactions up to $biggestTransactionId")
-        DSL.using(configuration).update(ProcessedEvent.processedEventTable)
+        dataContext.update(ProcessedEvent.processedEventTable)
             .set(ProcessedEvent.transactionId, biggestTransactionId)
             .execute()
-        println(DSL.using(configuration).select(ProcessedEvent.transactionId).from(ProcessedEvent.processedEventTable).fetchAny())
     }
 }
 

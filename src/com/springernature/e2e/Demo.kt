@@ -4,14 +4,13 @@ import com.springernature.e2e.ManuscriptTable.manuscriptLabel
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
-import org.http4k.core.Response
 import org.http4k.core.then
 import org.http4k.filter.DebuggingFilters
 import org.http4k.routing.bind
 import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.startServer
-import org.jooq.Configuration
+import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
 import org.neo4j.graphdb.GraphDatabaseService
@@ -51,24 +50,24 @@ fun main(args: Array<String>) {
 
     val server = DebuggingFilters.PrintRequestAndResponse(System.out)
         .then(
-            dbSession(conn, graphDb, { configuration, graphDbInTransaction ->
+            dbSession(conn, graphDb, { dataContext, graphDbInTransaction ->
                 cors(routes(
-                    "/article/{id:.+}/log" to GET bind logFor(configuration),
+                    "/article/{id:.+}/log" to GET bind logFor(dataContext),
                     "/article/{id:.+}/asGraph" to GET bind graphFor(graphDbInTransaction),
-                    "/article/{id:.+}/asXml" to GET bind asXml(configuration),
-                    "/article/{id:.+}/asPdf" to GET bind asPdf(configuration),
-                    "/article/{id:.+}/title" to GET bind updateTitleForm(configuration),
-                    "/article/{id:.+}/title" to POST bind updateTitle(configuration, graphDbInTransaction),
-                    "/article/{id:.+}/abstract" to GET bind updateAbstractForm(configuration),
-                    "/article/{id:.+}/abstract" to POST bind updateAbstract(configuration, graphDbInTransaction),
+                    "/article/{id:.+}/asXml" to GET bind asXml(dataContext),
+                    "/article/{id:.+}/asPdf" to GET bind asPdf(dataContext),
+                    "/article/{id:.+}/title" to GET bind updateTitleForm(dataContext),
+                    "/article/{id:.+}/title" to POST bind updateTitle(dataContext, graphDbInTransaction),
+                    "/article/{id:.+}/abstract" to GET bind updateAbstractForm(dataContext),
+                    "/article/{id:.+}/abstract" to POST bind updateAbstract(dataContext, graphDbInTransaction),
                     //                    "/article/{id:.+}/author/selection" to POST bind selectAuthors(dataContext),
 //                    "/article/{id:.+}/author/add" to POST bind selectAuthors(dataContext),
 //                    "/article/{id:.+}/author/{author:.+}" to POST bind selectAuthors(dataContext),
-                    "/article/{id:.+}/authors" to POST bind updateAuthors(configuration, graphDbInTransaction),
-                    "/article/{id:.+}/authors" to GET bind updateAuthorsForm(configuration),
+                    "/article/{id:.+}/authors" to POST bind updateAuthors(dataContext, graphDbInTransaction),
+                    "/article/{id:.+}/authors" to GET bind updateAuthorsForm(dataContext),
                     "/article/{id:.+}" to GET bind redirectToTitle(),
                     "/article" to GET bind createArticleForm(),
-                    "/article" to POST bind createArticle(configuration, graphDbInTransaction),
+                    "/article" to POST bind createArticle(dataContext, graphDbInTransaction),
                     "/static/{path:.*}" to GET bind serveStaticData()
                 ))
             })
@@ -81,20 +80,17 @@ fun main(args: Array<String>) {
 }
 
 
-fun dbSession(conn: Connection, graphDb: GraphDatabaseService, fn: (Configuration, GraphDatabaseService) -> HttpHandler): HttpHandler {
+fun dbSession(conn: Connection, graphDb: GraphDatabaseService, fn: (DSLContext, GraphDatabaseService) -> HttpHandler): HttpHandler {
     return { request ->
         graphDb.beginTx().use { tx ->
             try {
-                var response: Response? = null
-                DSL.using(conn, SQLDialect.H2).transaction { dataContext ->
-                    response = fn(dataContext, graphDb)(request)
-//                conn.commit()
-                    tx.success()
-                    response
-                }
-                response ?: throw RuntimeException("never got a response")
+                val dataContext = DSL.using(conn, SQLDialect.H2)
+                val response = fn(dataContext, graphDb)(request)
+                conn.commit()
+                tx.success()
+                response
             } catch (e: Exception) {
-//                conn.rollback()
+                conn.rollback()
                 throw e
             }
         }

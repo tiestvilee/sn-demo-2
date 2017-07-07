@@ -8,8 +8,7 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.routing.path
-import org.jooq.Configuration
-import org.jooq.impl.DSL
+import org.jooq.DSLContext
 import org.neo4j.graphdb.GraphDatabaseService
 import org.neo4j.graphdb.Node
 import org.neo4j.helpers.collection.Iterators.loop
@@ -67,10 +66,10 @@ val oldOriginalContent = """
 <p data-index="40">After DNase treatment, total RNA (2 μg) was used to produce cDNA with the Omniscript RT Kit (Qiagen, Valencia, CA, USA). The cDNA was used as the template for qRT-PCR using FastStart Universal SYBR Green Master (Roche, Indianapolis, IN, USA). The reaction was run on the LightCycler® 96 System (Roche, Pleasanton, CA, USA). The relative expression level of a gene was quantified using the expression value of cotton GhUBQ10 as an internal control using the primers (Additional file 10: Table S9).</p>
 """
 
-fun logFor(dataContext: Configuration): HttpHandler = { request ->
+fun logFor(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val body = DSL.using(dataContext).select(TransactionLog.transactionId, TransactionLog.transactionType, TransactionLog.payload)
+    val body = dataContext.select(TransactionLog.transactionId, TransactionLog.transactionType, TransactionLog.payload)
         .from(TransactionLog.transactionLogTable)
         .where(manuscriptId.eq(id.raw))
         .fetchMany().fold("",
@@ -115,7 +114,7 @@ fun outputNode(builder: StringBuilder, node: Node, indent: String, visitedNodes:
 
 private fun String.trimTo(length: Int): String = if (this.trim().length >= length) this.trim().substring(0, length - 3) + "..." else this.trim()
 
-fun asXml(dataContext: Configuration): HttpHandler = { request ->
+fun asXml(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -124,7 +123,7 @@ fun asXml(dataContext: Configuration): HttpHandler = { request ->
         .body(jatsFrom(manuscript).asString())
 }
 
-fun asPdf(dataContext: Configuration): HttpHandler = { request ->
+fun asPdf(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -133,7 +132,7 @@ fun asPdf(dataContext: Configuration): HttpHandler = { request ->
         .body(org.http4k.core.Body(pdfFrom(manuscript)))
 }
 
-fun updateTitleForm(dataContext: Configuration): HttpHandler = { request ->
+fun updateTitleForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -143,7 +142,7 @@ fun updateTitleForm(dataContext: Configuration): HttpHandler = { request ->
         htmlEditor("editable-title", fragment.markUp.raw, fragment.originalDocumentLocation, "title"))
 }
 
-fun updateAbstractForm(dataContext: Configuration): HttpHandler = { request ->
+fun updateAbstractForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -153,7 +152,7 @@ fun updateAbstractForm(dataContext: Configuration): HttpHandler = { request ->
         htmlEditor("editable-abstract", fragment.markUp.raw, fragment.originalDocumentLocation, "abstract"))
 }
 
-fun updateAuthorsForm(dataContext: Configuration): HttpHandler = { request ->
+fun updateAuthorsForm(dataContext: DSLContext): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)

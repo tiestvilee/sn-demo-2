@@ -7,7 +7,7 @@ import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.lens.*
 import org.http4k.routing.path
-import org.jooq.Configuration
+import org.jooq.DSLContext
 import org.neo4j.graphdb.GraphDatabaseService
 import java.util.*
 
@@ -21,12 +21,12 @@ interface TransactionEvent : Jsonable {
 
 }
 
-fun createArticle(configuration: Configuration, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
+fun createArticle(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.randomUUID())
 
-    logEvent(configuration, id, CreateManuscript(originalContent))
+    logEvent(dataContext, id, CreateManuscript(originalContent))
 
-    processEvents(configuration, graphDbInTransaction)
+    processEvents(dataContext, graphDbInTransaction)
 
     Response(Status.Companion.SEE_OTHER)
         .header("Location", "/article/${id.raw}")
@@ -53,10 +53,10 @@ val formSelector = FormField.string().required("formSelector")
 
 val forms = listOf("title", "abstract", "authors")
 
-fun updateTitle(configuration: Configuration, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
+fun updateTitle(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
-    val manuscript = Database.retrieveManuscript(configuration, id)
+    val manuscript = Database.retrieveManuscript(dataContext, id)
 
     val webForm = Body.webForm(FormValidator.Strict, titleParam, actionParam, formSelector, approvedParam, selectionStartParam, selectionEndParam).toLens()(request)
     val title = MarkUp(titleParam(webForm).replace(Regex("<p[^>]*>"), "").replace(Regex("</p[^>]*>"), ""))
@@ -69,14 +69,14 @@ fun updateTitle(configuration: Configuration, graphDbInTransaction: GraphDatabas
         val newManuscript = manuscript.copy(
             title = updateMarkUpFragment(title, approved ?: false, manuscript.title, selection)
         )
-        updateMarkupFragment(newManuscript, manuscript, configuration, "title", newManuscript.title, graphDbInTransaction)
+        updateMarkupFragment(newManuscript, manuscript, dataContext, "title", newManuscript.title, graphDbInTransaction)
     }
 
     Response(Status.SEE_OTHER)
         .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "title")}")
 }
 
-fun updateAbstract(dataContext: Configuration, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
+fun updateAbstract(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
 
     val manuscript = Database.retrieveManuscript(dataContext, id)
@@ -99,7 +99,7 @@ fun updateAbstract(dataContext: Configuration, graphDbInTransaction: GraphDataba
         .header("Location", "/article/${id.raw}/${formSuffix(action, selector, "abstract")}")
 }
 
-fun updateAuthors(dataContext: Configuration, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
+fun updateAuthors(dataContext: DSLContext, graphDbInTransaction: GraphDatabaseService): HttpHandler = { request ->
     val id = ManuscriptId(UUID.fromString(request.path("id")!!))
     val manuscript = Database.retrieveManuscript(dataContext, id)
 
@@ -131,7 +131,7 @@ private fun formSuffix(action: String, selector: String, currentForm: String): S
         else -> currentForm
     }
 
-private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: Configuration, fragmentName: String, fragment: MarkUpFragment, graphDbInTransaction: GraphDatabaseService) {
+private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscript, dataContext: DSLContext, fragmentName: String, fragment: MarkUpFragment, graphDbInTransaction: GraphDatabaseService) {
     if (newManuscript != manuscript) {
         logEvent(dataContext, manuscript.id, SetMarkupFragment(fragmentName, fragment))
         processEvents(dataContext, graphDbInTransaction)
@@ -139,7 +139,7 @@ private fun updateMarkupFragment(newManuscript: Manuscript, manuscript: Manuscri
 }
 
 fun updateContentFrom(manuscript: Manuscript): Manuscript {
-    val doc = Xml.document("<root>${manuscript.originalContent.raw}</root>")
+    val doc = Xml.document("<root>$originalContent</root>")
     val titleRange = manuscript.title.originalDocumentLocation ?: (-1..-1)
     val abstractRange = manuscript.abstract.originalDocumentLocation ?: (-1..-1)
     val authorsRange = manuscript.authors.originalDocumentLocation ?: (-1..-1)
